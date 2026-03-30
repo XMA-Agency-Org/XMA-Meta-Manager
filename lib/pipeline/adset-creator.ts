@@ -71,11 +71,13 @@ export async function createAdSet(
 		campaign_id: campaignId,
 		status: adSet.status,
 		targeting,
+		...(adSet.destinationType && { destination_type: adSet.destinationType }),
 		billing_event: adSet.billingEvent,
 		optimization_goal: adSet.optimizationGoal,
 		...(adSet.promotedObject && {
 			promoted_object: {
-				pixel_id: adSet.promotedObject.pixelId,
+				...(adSet.promotedObject.pixelId && { pixel_id: adSet.promotedObject.pixelId }),
+				...(adSet.promotedObject.pageId && { page_id: adSet.promotedObject.pageId }),
 				...(adSet.promotedObject.customEventType && {
 					custom_event_type: adSet.promotedObject.customEventType,
 				}),

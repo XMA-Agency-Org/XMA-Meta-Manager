@@ -55,6 +55,11 @@ function buildSingleObjectStorySpec(
 		...(creative.instagramActorId && { instagram_actor_id: creative.instagramActorId }),
 	}
 
+	const ctaValue = {
+		link: creative.landingPageUrl,
+		...(creative.leadFormId && { lead_gen_form_id: creative.leadFormId }),
+	}
+
 	if (isImageFile(creative.file!)) {
 		spec.link_data = {
 			link: creative.landingPageUrl,
@@ -64,7 +69,7 @@ function buildSingleObjectStorySpec(
 			...(creative.description && { description: creative.description }),
 			call_to_action: {
 				type: creative.callToAction as "SHOP_NOW",
-				value: { link: creative.landingPageUrl },
+				value: ctaValue,
 			},
 		}
 	} else {
@@ -76,7 +81,7 @@ function buildSingleObjectStorySpec(
 			...(thumbnailUrl && { image_url: thumbnailUrl }),
 			call_to_action: {
 				type: creative.callToAction as "SHOP_NOW",
-				value: { link: creative.landingPageUrl },
+				value: ctaValue,
 			},
 		}
 	}
@@ -115,6 +120,20 @@ function buildSingleAssetFeedSpec(
 	const isImage = isImageFile(creative.file!)
 	const adFormat = isImage ? "SINGLE_IMAGE" : "SINGLE_VIDEO"
 
+	const ctaSpec = creative.leadFormId
+		? {
+				call_to_actions: [
+					{
+						type: creative.callToAction as "SIGN_UP",
+						value: {
+							link: creative.landingPageUrl,
+							lead_gen_form_id: creative.leadFormId,
+						},
+					},
+				],
+			}
+		: { call_to_action_types: [creative.callToAction as "SHOP_NOW"] }
+
 	return {
 		optimization_type: "DEGREES_OF_FREEDOM",
 		...(hasMultipleTexts && {
@@ -124,7 +143,7 @@ function buildSingleAssetFeedSpec(
 			titles: creative.headlines.map((text) => ({ text })),
 		}),
 		link_urls: [{ website_url: creative.landingPageUrl }],
-		call_to_action_types: [creative.callToAction as "SHOP_NOW"],
+		...ctaSpec,
 		ad_formats: [adFormat],
 		...(isImage
 			? { images: [{ hash: assetId }] }

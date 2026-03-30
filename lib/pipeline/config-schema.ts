@@ -17,6 +17,7 @@ export const ConfigCampaign = z.object({
 		.enum(["LOWEST_COST_WITHOUT_CAP", "LOWEST_COST_WITH_BID_CAP", "COST_CAP", "LOWEST_COST_WITH_MIN_ROAS"])
 		.optional(),
 	dailyBudget: z.number().int().positive().optional(),
+	campaignBudgetOptimization: z.boolean().default(false),
 })
 
 export type ConfigCampaign = z.infer<typeof ConfigCampaign>
@@ -53,8 +54,12 @@ export const ConfigAdSet = z.object({
 	endTime: z.string().optional(),
 	promotedObject: z
 		.object({
-			pixelId: z.string(),
+			pixelId: z.string().optional(),
+			pageId: z.string().optional(),
 			customEventType: z.string().optional(),
+		})
+		.refine((data) => data.pixelId || data.pageId, {
+			message: "Either 'pixelId' or 'pageId' must be provided in promotedObject",
 		})
 		.optional(),
 	targeting: ConfigTargeting,
@@ -66,6 +71,7 @@ export const ConfigAdSet = z.object({
 			instagramPositions: z.array(z.string()).optional(),
 		})
 		.optional(),
+	destinationType: z.enum(["WEBSITE", "ON_AD", "MESSENGER", "WHATSAPP"]).optional(),
 	billingEvent: z
 		.enum(["IMPRESSIONS", "LINK_CLICKS", "POST_ENGAGEMENT", "VIDEO_VIEWS"])
 		.default("IMPRESSIONS"),
@@ -107,6 +113,7 @@ export const ConfigAdCreative = z
 		headlines: z.array(z.string()).min(1),
 		description: z.string().optional(),
 		callToAction: z.string().default("LEARN_MORE"),
+		leadFormId: z.string().optional(),
 		landingPageUrl: z.string().url(),
 		urlTags: z.string().optional(),
 	})

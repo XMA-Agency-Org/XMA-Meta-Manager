@@ -17,6 +17,7 @@ export async function createCampaign(
 		special_ad_categories: campaign.specialAdCategories,
 		...(campaign.bidStrategy && { bid_strategy: campaign.bidStrategy }),
 		...(campaign.dailyBudget && { daily_budget: campaign.dailyBudget }),
+		...(campaign.campaignBudgetOptimization && { campaign_budget_optimization: true }),
 	}
 
 	const result = await client.createCampaign(ctx.adAccountId, params)

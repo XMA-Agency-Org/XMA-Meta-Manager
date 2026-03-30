@@ -65,6 +65,7 @@ export const CampaignCreateParams = z.object({
 	special_ad_categories: z.array(z.string()).default([]),
 	daily_budget: z.number().int().positive().optional(),
 	bid_strategy: BidStrategy.optional(),
+	campaign_budget_optimization: z.boolean().optional(),
 })
 
 export type CampaignCreateParams = z.infer<typeof CampaignCreateParams>
@@ -101,11 +102,13 @@ export const AdSetCreateParams = z.object({
 	start_time: z.string().optional(),
 	end_time: z.string().optional(),
 	targeting: TargetingSpec,
+	destination_type: z.string().optional(),
 	billing_event: BillingEvent.default("IMPRESSIONS"),
 	optimization_goal: OptimizationGoal,
 	promoted_object: z
 		.object({
-			pixel_id: z.string(),
+			pixel_id: z.string().optional(),
+			page_id: z.string().optional(),
 			custom_event_type: z.string().optional(),
 		})
 		.optional(),
@@ -130,7 +133,7 @@ export const ChildAttachment = z.object({
 	call_to_action: z
 		.object({
 			type: CallToAction,
-			value: z.object({ link: z.string().url() }).optional(),
+			value: z.object({ link: z.string().url(), lead_gen_form_id: z.string().optional() }).optional(),
 		})
 		.optional(),
 })
@@ -145,7 +148,7 @@ export const LinkData = z.object({
 	call_to_action: z
 		.object({
 			type: CallToAction,
-			value: z.object({ link: z.string().url() }).optional(),
+			value: z.object({ link: z.string().url(), lead_gen_form_id: z.string().optional() }).optional(),
 		})
 		.optional(),
 	child_attachments: z.array(ChildAttachment).optional(),
@@ -160,7 +163,7 @@ export const VideoData = z.object({
 	call_to_action: z
 		.object({
 			type: CallToAction,
-			value: z.object({ link: z.string().url() }).optional(),
+			value: z.object({ link: z.string().url(), lead_gen_form_id: z.string().optional() }).optional(),
 		})
 		.optional(),
 	image_hash: z.string().optional(),
@@ -175,11 +178,20 @@ export const ObjectStorySpec = z.object({
 })
 
 export const AssetFeedSpec = z.object({
+	optimization_type: z.string().optional(),
 	bodies: z.array(z.object({ text: z.string() })).optional(),
 	titles: z.array(z.object({ text: z.string() })).optional(),
 	descriptions: z.array(z.object({ text: z.string() })).optional(),
 	link_urls: z.array(z.object({ website_url: z.string().url() })).optional(),
 	call_to_action_types: z.array(CallToAction).optional(),
+	call_to_actions: z
+		.array(
+			z.object({
+				type: CallToAction,
+				value: z.object({ link: z.string().url(), lead_gen_form_id: z.string().optional() }),
+			}),
+		)
+		.optional(),
 	ad_formats: z.array(z.string()).optional(),
 	videos: z.array(z.object({ video_id: z.string(), thumbnail_url: z.string().optional(), thumbnail_hash: z.string().optional() })).optional(),
 	images: z.array(z.object({ hash: z.string() })).optional(),
