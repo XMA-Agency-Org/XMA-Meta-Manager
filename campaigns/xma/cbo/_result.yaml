@@ -1,0 +1,22 @@
+executedAt: 2026-03-30T12:42:00.000Z
+adAccountId: act_1548812549688711
+campaign:
+  ref: xma_cbo_leads
+  metaId: "120251684310500059"
+  adsManagerUrl: https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=1548812549688711&campaign_ids=120251684310500059
+adSets:
+  - ref: uae_broad_v3
+    metaId: "120251684311340059"
+  - ref: us_cities_v3
+    metaId: "120251684313680059"
+adCreatives:
+  - ref: testimonial_uae:creative
+    metaId: "3967959603347994"
+ads:
+  - ref: testimonial_uae
+    metaId: "120251684361600059"
+  - ref: testimonial_us
+    metaId: "120251684365780059"
+creatives:
+  - file: xma ai ad - big guy Testimonial (1).mp4
+    assetId: "2725197987850681"

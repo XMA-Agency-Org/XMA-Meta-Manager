@@ -1,0 +1,66 @@
+executedAt: 2026-03-16T14:26:37.413Z
+completedAt: 2026-03-16T19:15:00.000Z
+adAccountId: act_279890659888368
+campaignId: "120242865095020028"
+adSets:
+  - ref: broad_uae
+    metaId: "120242865553630028"
+creatives:
+  - file: Video 8 General.mov
+    assetId: "951982044056277"
+  - file: Video 2 Fresh Rose.mov
+    assetId: "2688927481478901"
+  - file: Video 11 Forever Roses.mov
+    assetId: "1254418526869254"
+  - file: Video 3 Bundle.mov
+    assetId: "2213232092418109"
+  - file: Video 4 Fresh Rose.mov
+    assetId: "4365262620359616"
+  - file: Video 10 Bundle.mov
+    assetId: "1269518588612388"
+  - file: Video 6 Forever Rose.mov
+    assetId: "944112468316088"
+adCreatives:
+  - ref: v8_general
+    metaId: "1479522800553609"
+    name: V8 General - Promo Ordering Online
+  - ref: v2_fresh_rose
+    metaId: "2101716487281412"
+    name: V2 Fresh Rose - Two Mothers Angle
+  - ref: v11_forever_roses
+    metaId: "2001555104107167"
+    name: V11 Forever Roses - Collection Highlight
+  - ref: v3_bundle
+    metaId: "1257551889814903"
+    name: V3 Bundle - Fresh Flowers Gift Guide
+  - ref: v4_fresh_rose
+    metaId: "932454466146393"
+    name: V4 Fresh Rose - Bare Minimum Angle
+  - ref: v10_bundle
+    metaId: "1428665002290726"
+    name: V10 Bundle - Surprise Reveal
+  - ref: v6_forever_rose
+    metaId: "1224576562989657"
+    name: V6 Forever Rose - Jewellery Combo
+ads:
+  - ref: v8_general
+    metaId: "120242872610670028"
+    name: V8 General - Promo Ordering Online
+  - ref: v2_fresh_rose
+    metaId: "120242872630440028"
+    name: V2 Fresh Rose - Two Mothers Angle
+  - ref: v11_forever_roses
+    metaId: "120242872643200028"
+    name: V11 Forever Roses - Collection Highlight
+  - ref: v3_bundle
+    metaId: "120242872659620028"
+    name: V3 Bundle - Fresh Flowers Gift Guide
+  - ref: v4_fresh_rose
+    metaId: "120242872666360028"
+    name: V4 Fresh Rose - Bare Minimum Angle
+  - ref: v10_bundle
+    metaId: "120242872683680028"
+    name: V10 Bundle - Surprise Reveal
+  - ref: v6_forever_rose
+    metaId: "120242872688810028"
+    name: V6 Forever Rose - Jewellery Combo

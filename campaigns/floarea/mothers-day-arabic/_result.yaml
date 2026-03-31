@@ -1,0 +1,38 @@
+executedAt: 2026-03-19T15:13:07.730Z
+adAccountId: act_279890659888368
+adSets:
+  - ref: broad_uae_arabic
+    metaId: "120243026500550028"
+adCreatives:
+  - ref: v8_general_ar:creative
+    metaId: "927658803243991"
+  - ref: v3_bundle_ar:creative
+    metaId: "821862680952227"
+  - ref: v10_bundle_ar:creative
+    metaId: "1636678607380075"
+  - ref: v6_forever_rose_ar:creative
+    metaId: "2112159699633033"
+  - ref: v9_bundle_ar:creative
+    metaId: "1585094902748679"
+ads:
+  - ref: v8_general_ar
+    metaId: "120243026503830028"
+  - ref: v3_bundle_ar
+    metaId: "120243026506890028"
+  - ref: v10_bundle_ar
+    metaId: "120243026510500028"
+  - ref: v6_forever_rose_ar
+    metaId: "120243026515550028"
+  - ref: v9_bundle_ar
+    metaId: "120243026914270028"
+creatives:
+  - file: Floarea Video 8 Arabic.mp4
+    assetId: "919035001040905"
+  - file: Floarea Video 3 Arabic.mp4
+    assetId: "1889680532420949"
+  - file: Floarea Video 10 Arabic.mp4
+    assetId: "793488523347002"
+  - file: Floarea Video 6 Arabic.mp4
+    assetId: "2135514197208821"
+  - file: Floarea Video 9 Arabic.mp4
+    assetId: "1305654504711297"

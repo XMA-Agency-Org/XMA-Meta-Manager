@@ -69,9 +69,9 @@ YAML config-driven CLI for creating entire Meta ad campaigns:
 
 **Multiple text optimization:** When an ad has multiple `primaryTexts` or `headlines`, the pipeline builds an `AssetFeedSpec` with `optimization_type: "DEGREES_OF_FREEDOM"` (Advantage+ Creative). This is **NOT** Dynamic Creative Optimization (DCO) — no `is_dynamic_creative` flag on the ad set, no 1-ad-per-ad-set limit. The full `object_story_spec` (with link/image/video data) is always required alongside `asset_feed_spec`. DCO (`is_dynamic_creative: true`) is a separate Meta feature with stricter constraints and should not be used.
 
-**Carousel ads:** When an ad's creative has `slides` (array of `{file, headline?}`, min 2) instead of `file`, it's a carousel. The pipeline builds `object_story_spec.link_data.child_attachments` with per-slide `image_hash`, `link`, `name` (headline), and `call_to_action`. `multi_share_end_card` is set to `false`. Carousel ads cannot have both `file` and `slides`. Slide headlines fall back to the ad-level `headlines` array by index. **Important:** Carousel `asset_feed_spec` only supports `bodies` (primary texts) — `titles` are not allowed. Per-slide headlines go in `child_attachments[].name` instead.
+**Carousel ads:** When an ad's creative has `slides` (array of `{file, headline?}`, min 2) instead of `file`, it's a carousel. The pipeline builds `object_story_spec.link_data.child_attachments` with per-slide `image_hash`, `link`, `name` (headline), and `call_to_action`. `multi_share_end_card` is set to `false`. Carousel ads cannot have both `file` and `slides`. Slide headlines fall back to the ad-level `headlines` array by index. **Important:** Carousel `asset_feed_spec` only supports `bodies` (primary texts) — `titles` are not allowed. Per-slide headlines go in `child_attachments[].name` instead. **Important:** The `call_to_action` must also be set at the top-level `link_data` — not just on individual `child_attachments`. Without the top-level CTA, Meta will not show a CTA button on the carousel ad.
 
-**Campaign folders:** `campaigns/<name>/config.yaml` + `campaigns/<name>/creatives/` for media files.
+**Campaign folders:** `campaigns/<client>/<campaign>/config.yaml` + `campaigns/<client>/<campaign>/creatives/` for media files. Campaigns are organized by client (e.g., `campaigns/floarea/mothers-day/`).
 
 ### Database Layer (`db/`)
 
@@ -140,7 +140,17 @@ Required in `.env.local`:
 - File uploads for Meta use `form-data` package with `fs.createReadStream` (not native `FormData`/`Blob` — incompatible with axios in Bun)
 - Multiple text/headline options use `asset_feed_spec` with `optimization_type: "DEGREES_OF_FREEDOM"` — this is Advantage+ Creative, NOT DCO. Always include full `object_story_spec` alongside it. Do NOT set `is_dynamic_creative: true` on ad sets.
 - Meta API "delete" only archives entities (sets status to DELETED) — archived IDs remain valid but unusable for new child entities. `is_dynamic_creative` is immutable after ad set creation.
+- **Attribution standard:** Every ad set must include `attributionSpec` with 7-day click / 1-day view (`CLICK_THROUGH` 7, `VIEW_THROUGH` 1). Attribution and pixel are immutable after ad set creation — getting them wrong requires recreating the entire campaign.
 - Pipeline budgets are in cents (e.g., `5000` = $50.00)
 - All pipeline-created entities default to `PAUSED` status
 - Zod v4 requires `import { z } from "zod/v4"` (not `"zod"`)
 - `next.config.ts` lists `sharp` in `serverExternalPackages`
+
+## Cross-Business Ad Account Setup
+
+When managing campaigns on an ad account owned by another business:
+
+1. **Ad account access** — the other business must share the ad account via Business Settings → Ad Accounts → Assign Partners (grant your Business ID manage campaigns permission)
+2. **Page access** — the Facebook Page must ALSO be shared separately via Business Settings → Pages → Assign Partners (grant Create Content permission). Sharing only the ad account is not enough — ad creative creation requires page-level permission.
+3. **Instagram linking** — the Instagram account must be linked to the Facebook Page (Page Settings → Linked Accounts → Instagram) before using `instagramActorId` in ad creatives. Verify with the Page's `/instagram_accounts` endpoint before adding to config. The `get_instagram_accounts` MCP tool checks the ad account level, which is different from the page-level link required for ad creatives.
+4. **Verify before pipeline run** — always confirm page access (`GET /{page_id}?fields=name,access_token`) and Instagram linking before running the pipeline to avoid partial failures that create orphaned campaigns/ad sets.

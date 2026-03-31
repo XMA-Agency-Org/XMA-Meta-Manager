@@ -1,0 +1,156 @@
+executedAt: 2026-03-31T10:00:06.999Z
+adAccountId: act_4260801710870292
+campaign:
+  ref: novobaby_uae_sales
+  metaId: "120242711013630789"
+  adsManagerUrl: https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=4260801710870292&campaign_ids=120242711013630789
+adSets:
+  - ref: full_product_line
+    metaId: "120242711014250789"
+  - ref: diaper_rash_cream
+    metaId: "120242711015220789"
+  - ref: hydration_lotion_oil
+    metaId: "120242711015620789"
+  - ref: shampoo_wipes
+    metaId: "120242711016010789"
+adCreatives:
+  - ref: post_18_full_line:creative
+    metaId: "2047767695782315"
+  - ref: post_06_full_line_fda:creative
+    metaId: "2215757079252239"
+  - ref: post_07_v1_different:creative
+    metaId: "937703805900651"
+  - ref: post_07_v2_different:creative
+    metaId: "1521795602665710"
+  - ref: post_14_problems_solution:creative
+    metaId: "3530164707384467"
+  - ref: post_08_oil_cologne:creative
+    metaId: "2575542212848175"
+  - ref: post_16_lotion:creative
+    metaId: "1279607354144199"
+  - ref: post_17_lotion_oil:creative
+    metaId: "1631859367935001"
+  - ref: post_10_v1_rash_cream:creative
+    metaId: "3916373825334897"
+  - ref: post_10_v2_rash_cream:creative
+    metaId: "1003088112383699"
+  - ref: post_10_v3_rash_cream:creative
+    metaId: "1622252942351178"
+  - ref: post_10_v4_rash_cream:creative
+    metaId: "1629971838332131"
+  - ref: post_10_v5_rash_cream:creative
+    metaId: "1266862675574645"
+  - ref: post_13_rash_cream_ingredients:creative
+    metaId: "1595474222587437"
+  - ref: post_09_carousel_full_line:creative
+    metaId: "1450030889324198"
+  - ref: post_09v2_carousel_full_line:creative
+    metaId: "814628857784927"
+  - ref: post_11_carousel_shampoo:creative
+    metaId: "886647024403310"
+  - ref: post_12_carousel_wipes:creative
+    metaId: "1474185191384927"
+ads:
+  - ref: post_18_full_line
+    metaId: "120242711017080789"
+  - ref: post_06_full_line_fda
+    metaId: "120242711018260789"
+  - ref: post_07_v1_different
+    metaId: "120242711020020789"
+  - ref: post_07_v2_different
+    metaId: "120242711022540789"
+  - ref: post_14_problems_solution
+    metaId: "120242711023910789"
+  - ref: post_08_oil_cologne
+    metaId: "120242711027530789"
+  - ref: post_16_lotion
+    metaId: "120242711028610789"
+  - ref: post_17_lotion_oil
+    metaId: "120242711031030789"
+  - ref: post_10_v1_rash_cream
+    metaId: "120242711044510789"
+  - ref: post_10_v2_rash_cream
+    metaId: "120242711048910789"
+  - ref: post_10_v3_rash_cream
+    metaId: "120242711052840789"
+  - ref: post_10_v4_rash_cream
+    metaId: "120242711055290789"
+  - ref: post_10_v5_rash_cream
+    metaId: "120242711057130789"
+  - ref: post_13_rash_cream_ingredients
+    metaId: "120242711059470789"
+  - ref: post_09_carousel_full_line
+    metaId: "120242711062390789"
+  - ref: post_09v2_carousel_full_line
+    metaId: "120242711065950789"
+  - ref: post_11_carousel_shampoo
+    metaId: "120242711071580789"
+  - ref: post_12_carousel_wipes
+    metaId: "120242711077500789"
+creatives:
+  - file: graphics/post-18.png
+    assetId: 0dfb6c2e8a0d36740473cee4e6206704
+  - file: graphics/post-06.png
+    assetId: f3e797489f4bf001112187d9b91a3a21
+  - file: graphics/post-07-v1.png
+    assetId: c9014d7f4cc0f53cd87603ad05727c62
+  - file: graphics/post-07-v2.png
+    assetId: ae114a72813365e6641d7f28ad6b4833
+  - file: graphics/post-14.png
+    assetId: bb6d018601038a1d5f1e2f415594b8f4
+  - file: graphics/post-08.png
+    assetId: ec797fe34ab3a1181dca467bd736ff02
+  - file: graphics/post-16.png
+    assetId: 2fa93788e3f52169178f2ef7fec81b15
+  - file: graphics/post-17.png
+    assetId: 52561b698647baeef7e8bb55422750c0
+  - file: graphics/post-10-v1-rash_cream.png
+    assetId: eb191fe3fd8eafb25cbffe702ddce02b
+  - file: graphics/post-10-v2-rash_cream.png
+    assetId: 37bbebea42a693051cce5a6488b5387c
+  - file: graphics/post-10-v3-rash_cream.png
+    assetId: c963620f4ee20fa8f5c7a57b64334e6f
+  - file: graphics/post-10-v4-rash_cream.png
+    assetId: a7e4ae2b4a9df55c2975824902228341
+  - file: graphics/post-10-v5-rash_cream.png
+    assetId: 6cd73b44294f2039303eb697889bc59d
+  - file: graphics/post-13.png
+    assetId: 436beb6c6db88e31cc439df1af7e2f3a
+  - file: graphics/post-09-slide-1.jpeg
+    assetId: d3832b8d445143fcf3cffcbb1fe1b89f
+  - file: graphics/post-09-slide-2.jpeg
+    assetId: 2a13f868a76d92e22cff446f788cc90b
+  - file: graphics/post-09-slide-3.jpeg
+    assetId: 05967f48ac59dadd96ac05a323ca8935
+  - file: graphics/post-09-slide-4.jpeg
+    assetId: 776b60643ce3e5b9d1f0f1ca39029582
+  - file: graphics/post-09-slide-5.jpeg
+    assetId: 2ff031839edb7b3b5988dbe21e0a40d1
+  - file: graphics/post-09-slide-6.jpeg
+    assetId: d5ca459edcb4497fde42a3011898974c
+  - file: graphics/post-09-slide-7.jpeg
+    assetId: 56c7668e70182c35a40ce70a6ffd01db
+  - file: graphics/post-09-v2-slide-1.png
+    assetId: 9c518feb59235e57e46ca5b7030faf47
+  - file: graphics/post-09-v2-slide-2.png
+    assetId: bcba886ffeda55ea7f46c2da28551553
+  - file: graphics/post-09-v2-slide-3.png
+    assetId: 483bc64c34760ae49fd4cb19f29dfb50
+  - file: graphics/post-09-v2-slide-4.png
+    assetId: bd3d002d38c80ec1a82c6373b0a855e3
+  - file: graphics/post-09-v2-slide-5.png
+    assetId: 411ba5eaf77c9c00f88bdb923ede5533
+  - file: graphics/post-09-v2-slide-6.png
+    assetId: 6f295e76667082a35364269c95cc5c39
+  - file: graphics/post-09-v2-slide-7.png
+    assetId: b6fbe2367718776ee2a13b48c96ac44c
+  - file: graphics/post-11-slide-1.png
+    assetId: 7a7f559181e7a92147a31ee8121765f1
+  - file: graphics/post-11-slide-2.png
+    assetId: 794f7efcb65478da4d661cab08d389c5
+  - file: graphics/post-11-slide-3.png
+    assetId: d1691248f460ac9ab257b6064e71724d
+  - file: graphics/post-12-slide-1.png
+    assetId: a72207e2da94f953d8ccf23e89735d3a
+  - file: graphics/post-12-slide-2.png
+    assetId: 42552b9f79cd022f331751b17028fd33
