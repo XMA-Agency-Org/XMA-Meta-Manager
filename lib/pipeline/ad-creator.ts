@@ -39,6 +39,10 @@ function buildCarouselObjectStorySpec(
 			message: creative.primaryTexts[0],
 			child_attachments: childAttachments,
 			multi_share_end_card: false,
+			call_to_action: {
+				type: creative.callToAction as "SHOP_NOW",
+				value: { link: creative.landingPageUrl },
+			},
 		},
 	}
 }
