@@ -49,8 +49,8 @@ next-env.d.ts
 /uploads
 
 # campaign creatives and results
-campaigns/*/creatives/
-campaigns/*/_result*.yaml
+campaigns/**/creatives/
+campaigns/**/_result*.yaml
 
 # root creatives
 /creatives/
