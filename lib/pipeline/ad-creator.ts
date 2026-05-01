@@ -10,6 +10,10 @@ function isImageFile(filename: string): boolean {
 	return IMAGE_EXTENSIONS.has(path.extname(filename).toLowerCase())
 }
 
+function resolveLink(creative: ConfigAd["creative"]): string {
+	return creative.landingPageUrl ?? "https://www.facebook.com/"
+}
+
 function isCarouselAd(ad: ConfigAd): boolean {
 	return Array.isArray(ad.creative.slides) && ad.creative.slides.length >= 2
 }
@@ -23,25 +27,25 @@ function buildCarouselObjectStorySpec(
 
 	const childAttachments = slides.map((slide, index) => ({
 		image_hash: ctx.resolveRef(`file:${slide.file}`),
-		link: creative.landingPageUrl,
+		link: resolveLink(creative),
 		name: slide.headline ?? creative.headlines[index] ?? creative.headlines[0],
 		call_to_action: {
 			type: creative.callToAction as "SHOP_NOW",
-			value: { link: creative.landingPageUrl },
+			value: { link: resolveLink(creative) },
 		},
 	}))
 
 	return {
 		page_id: creative.pageId,
-		...(creative.instagramActorId && { instagram_actor_id: creative.instagramActorId }),
+		...(creative.instagramActorId && { instagram_user_id: creative.instagramActorId }),
 		link_data: {
-			link: creative.landingPageUrl,
+			link: resolveLink(creative),
 			message: creative.primaryTexts[0],
 			child_attachments: childAttachments,
 			multi_share_end_card: false,
 			call_to_action: {
 				type: creative.callToAction as "SHOP_NOW",
-				value: { link: creative.landingPageUrl },
+				value: { link: resolveLink(creative) },
 			},
 		},
 	}
@@ -56,17 +60,17 @@ function buildSingleObjectStorySpec(
 
 	const spec: ObjectStorySpec = {
 		page_id: creative.pageId,
-		...(creative.instagramActorId && { instagram_actor_id: creative.instagramActorId }),
+		...(creative.instagramActorId && { instagram_user_id: creative.instagramActorId }),
 	}
 
 	const ctaValue = {
-		link: creative.landingPageUrl,
+		link: resolveLink(creative),
 		...(creative.leadFormId && { lead_gen_form_id: creative.leadFormId }),
 	}
 
 	if (isImageFile(creative.file!)) {
 		spec.link_data = {
-			link: creative.landingPageUrl,
+			link: resolveLink(creative),
 			message: creative.primaryTexts[0],
 			name: creative.headlines[0],
 			image_hash: assetId,
@@ -104,7 +108,7 @@ function buildCarouselAssetFeedSpec(
 	return {
 		optimization_type: "DEGREES_OF_FREEDOM",
 		bodies: creative.primaryTexts.map((text) => ({ text })),
-		link_urls: [{ website_url: creative.landingPageUrl }],
+		link_urls: [{ website_url: resolveLink(creative) }],
 		call_to_action_types: [creative.callToAction as "SHOP_NOW"],
 		ad_formats: ["CAROUSEL_IMAGE"],
 	}
@@ -130,7 +134,7 @@ function buildSingleAssetFeedSpec(
 					{
 						type: creative.callToAction as "SIGN_UP",
 						value: {
-							link: creative.landingPageUrl,
+							link: resolveLink(creative),
 							lead_gen_form_id: creative.leadFormId,
 						},
 					},
@@ -146,13 +150,36 @@ function buildSingleAssetFeedSpec(
 		...(hasMultipleHeadlines && {
 			titles: creative.headlines.map((text) => ({ text })),
 		}),
-		link_urls: [{ website_url: creative.landingPageUrl }],
+		link_urls: [{ website_url: resolveLink(creative) }],
 		...ctaSpec,
 		ad_formats: [adFormat],
 		...(isImage
 			? { images: [{ hash: assetId }] }
 			: { videos: [{ video_id: assetId, ...(thumbnailUrl && { thumbnail_url: thumbnailUrl }) }] }),
 	}
+}
+
+async function pollForVideoReady(
+	client: MetaApiClient,
+	videoId: string,
+	maxAttempts = 20,
+	delayMs = 5000,
+): Promise<string | undefined> {
+	for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+		const { status } = await client.getVideoStatus(videoId)
+		if (status.video_status === "ready") {
+			const result = await client.getVideoThumbnails(videoId)
+			const uri = result.data?.[0]?.uri
+			if (uri) return uri
+		}
+		if (attempt < maxAttempts) {
+			const progress = status.processing_progress != null ? ` (${status.processing_progress}%)` : ""
+			console.log(`  Waiting for video to finish processing${progress} (attempt ${attempt}/${maxAttempts})...`)
+			await new Promise((resolve) => setTimeout(resolve, delayMs))
+		}
+	}
+	console.warn(`  Warning: Video not ready after ${maxAttempts} attempts`)
+	return undefined
 }
 
 export async function createAd(
@@ -175,8 +202,7 @@ export async function createAd(
 
 		let thumbnailUrl: string | undefined
 		if (!isImageFile(ad.creative.file!)) {
-			const thumbnails = await client.getVideoThumbnails(assetId)
-			thumbnailUrl = thumbnails.data?.[0]?.uri
+			thumbnailUrl = await pollForVideoReady(client, assetId)
 		}
 
 		objectStorySpec = buildSingleObjectStorySpec(ad, assetId, thumbnailUrl)
@@ -193,6 +219,7 @@ export async function createAd(
 		object_story_spec: objectStorySpec,
 		...(assetFeedSpec && { asset_feed_spec: assetFeedSpec }),
 		...(ad.creative.urlTags && { url_tags: ad.creative.urlTags }),
+		...(ad.creative.catalogId && { product_catalog_id: ad.creative.catalogId }),
 	}
 
 	const creativeResult = await client.createAdCreative(ctx.adAccountId, creativeParams)

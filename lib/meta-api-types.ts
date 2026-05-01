@@ -66,6 +66,7 @@ export const CampaignCreateParams = z.object({
 	daily_budget: z.number().int().positive().optional(),
 	bid_strategy: BidStrategy.optional(),
 	campaign_budget_optimization: z.boolean().optional(),
+	is_adset_budget_sharing_enabled: z.boolean().optional(),
 })
 
 export type CampaignCreateParams = z.infer<typeof CampaignCreateParams>
@@ -89,6 +90,7 @@ export const TargetingSpec = z.object({
 	publisher_platforms: z.array(z.string()).optional(),
 	facebook_positions: z.array(z.string()).optional(),
 	instagram_positions: z.array(z.string()).optional(),
+	user_os: z.array(z.string()).optional(),
 })
 
 export type TargetingSpec = z.infer<typeof TargetingSpec>
@@ -113,6 +115,7 @@ export const AdSetCreateParams = z.object({
 		})
 		.optional(),
 	is_dynamic_creative: z.boolean().optional(),
+	bid_strategy: BidStrategy.optional(),
 	bid_amount: z.number().int().positive().optional(),
 	attribution_spec: z
 		.array(
@@ -202,6 +205,7 @@ export const AdCreativeCreateParams = z.object({
 	object_story_spec: ObjectStorySpec,
 	asset_feed_spec: AssetFeedSpec.optional(),
 	url_tags: z.string().optional(),
+	product_catalog_id: z.string().optional(),
 })
 
 export type AdCreativeCreateParams = z.infer<typeof AdCreativeCreateParams>

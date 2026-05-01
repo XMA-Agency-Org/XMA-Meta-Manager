@@ -143,6 +143,7 @@ Required in `.env.local`:
 - **Attribution standard:** Every ad set must include `attributionSpec` with 7-day click / 1-day view (`CLICK_THROUGH` 7, `VIEW_THROUGH` 1). Attribution and pixel are immutable after ad set creation — getting them wrong requires recreating the entire campaign.
 - Pipeline budgets are in cents (e.g., `5000` = $50.00)
 - All pipeline-created entities default to `PAUSED` status
+- **Placement default:** Always target iOS only (`publisher_platforms: ["instagram"]`, `device_platforms: ["mobile"]`, `user_os: ["iOS"]`, `instagram_positions: ["stream","story","reels"]`). Never include Facebook placements unless explicitly requested.
 - Zod v4 requires `import { z } from "zod/v4"` (not `"zod"`)
 - `next.config.ts` lists `sharp` in `serverExternalPackages`
 

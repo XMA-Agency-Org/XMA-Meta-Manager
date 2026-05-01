@@ -1,0 +1,119 @@
+version: 1
+adAccountId: "act_279890659888368"
+
+existingCampaignId: "120243744798940028"
+
+adSets:
+  - ref: "uae_ig_traffic"
+    name: "UAE All Ages All Genders - Instagram Only"
+    campaignRef: "floarea_ig_traffic"
+    status: "PAUSED"
+    promotedObject:
+      pageId: "773383349196089"
+    targeting:
+      geoLocations:
+        countries: ["AE"]
+    destinationType: "INSTAGRAM_PROFILE"
+    placements: "manual"
+    manualPlacements:
+      platforms: ["instagram"]
+      instagramPositions: ["stream", "story", "reels", "explore", "explore_home"]
+    billingEvent: "IMPRESSIONS"
+    optimizationGoal: "LINK_CLICKS"
+
+ads:
+  - ref: "girls_dream_showcase"
+    name: "Girls Dream - All Collections Showcase"
+    adSetRef: "uae_ig_traffic"
+    status: "PAUSED"
+    creative:
+      pageId: "773383349196089"
+      instagramActorId: "17841472671703071"
+      file: "girls-dream-all-collections-showcase.mp4"
+      primaryTexts:
+        - "Explore our full collection of luxury bouquets and forever roses 🌹\n\nFrom fresh arrangements to everlasting keepsakes — find the perfect flowers for every occasion.\n\n👇 Visit our profile to see more."
+      headlines:
+        - "Discover the Full Floarea Collection"
+      callToAction: "LEARN_MORE"
+      landingPageUrl: "https://www.instagram.com/floareauae/"
+      urlTags: "utm_source=meta&utm_medium=paid&utm_campaign=social_media_traffic&utm_content=girls_dream_showcase"
+
+  - ref: "25_off_free_delivery"
+    name: "25% Off + Free Delivery"
+    adSetRef: "uae_ig_traffic"
+    status: "PAUSED"
+    creative:
+      pageId: "773383349196089"
+      instagramActorId: "17841472671703071"
+      file: "25-percent-off-free-delivery.mp4"
+      primaryTexts:
+        - "25% off + free delivery on all orders 🚗✨\n\nLuxury flowers delivered to your door — no minimum, no hassle.\n\n👇 Follow us for exclusive offers and new drops."
+      headlines:
+        - "25% Off + Free Delivery"
+      callToAction: "LEARN_MORE"
+      landingPageUrl: "https://www.instagram.com/floareauae/"
+      urlTags: "utm_source=meta&utm_medium=paid&utm_campaign=social_media_traffic&utm_content=25_off_free_delivery"
+
+  - ref: "life_with_her"
+    name: "Life With Her Life Without Her"
+    adSetRef: "uae_ig_traffic"
+    status: "PAUSED"
+    creative:
+      pageId: "773383349196089"
+      instagramActorId: "17841472671703071"
+      file: "life-with-her-life-without-her.mp4"
+      primaryTexts:
+        - "Life with flowers vs. life without 🌸\n\nMake every space feel alive with luxury blooms from Floarea.\n\n👇 Follow us for daily floral inspiration."
+      headlines:
+        - "Life With Flowers Changes Everything"
+      callToAction: "LEARN_MORE"
+      landingPageUrl: "https://www.instagram.com/floareauae/"
+      urlTags: "utm_source=meta&utm_medium=paid&utm_campaign=social_media_traffic&utm_content=life_with_her"
+
+  - ref: "sign_to_surprise"
+    name: "This Is Your Sign to Surprise Her"
+    adSetRef: "uae_ig_traffic"
+    status: "PAUSED"
+    creative:
+      pageId: "773383349196089"
+      instagramActorId: "17841472671703071"
+      file: "this-your-sign-to-suprise-her.mp4"
+      primaryTexts:
+        - "This is your sign to surprise her 💐\n\nLuxury bouquets handcrafted and delivered in 1 hour across Dubai.\n\n👇 Follow us and get inspired."
+      headlines:
+        - "This Is Your Sign to Surprise Her"
+      callToAction: "LEARN_MORE"
+      landingPageUrl: "https://www.instagram.com/floareauae/"
+      urlTags: "utm_source=meta&utm_medium=paid&utm_campaign=social_media_traffic&utm_content=sign_to_surprise"
+
+  - ref: "obsessed_with_flowers"
+    name: "Obsessed With Flowers"
+    adSetRef: "uae_ig_traffic"
+    status: "PAUSED"
+    creative:
+      pageId: "773383349196089"
+      instagramActorId: "17841472671703071"
+      file: "obssesed-with-flowers.mp4"
+      primaryTexts:
+        - "Obsessed with flowers? Same 🌹\n\nDiscover handcrafted luxury bouquets and forever roses — made for those who appreciate the finer things.\n\n👇 Follow Floarea for your daily dose of blooms."
+      headlines:
+        - "Obsessed With Flowers? Follow Us"
+      callToAction: "LEARN_MORE"
+      landingPageUrl: "https://www.instagram.com/floareauae/"
+      urlTags: "utm_source=meta&utm_medium=paid&utm_campaign=social_media_traffic&utm_content=obsessed_with_flowers"
+
+  - ref: "surprise_the_one"
+    name: "Surprise the One You Love"
+    adSetRef: "uae_ig_traffic"
+    status: "PAUSED"
+    creative:
+      pageId: "773383349196089"
+      instagramActorId: "17841472671703071"
+      file: "suprise-the-one-you-love.mp4"
+      primaryTexts:
+        - "Surprise the one you love with luxury flowers 🌸\n\nHandcrafted bouquets delivered in 1 hour anywhere in Dubai.\n\n👇 Follow us for gifting ideas and new collections."
+      headlines:
+        - "Surprise the One You Love"
+      callToAction: "LEARN_MORE"
+      landingPageUrl: "https://www.instagram.com/floareauae/"
+      urlTags: "utm_source=meta&utm_medium=paid&utm_campaign=social_media_traffic&utm_content=surprise_the_one"

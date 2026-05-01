@@ -159,6 +159,13 @@ export class MetaApiClient {
 	}
 
 	async uploadVideo(adAccountId: string, filePath: string): Promise<VideoUploadResponse> {
+		const fileSize = fs.statSync(filePath).size
+		const CHUNKED_THRESHOLD = 100 * 1024 * 1024
+
+		if (fileSize > CHUNKED_THRESHOLD) {
+			return this.uploadVideoChunked(adAccountId, filePath, fileSize)
+		}
+
 		const filename = path.basename(filePath)
 
 		const formData = new FormData()
@@ -178,6 +185,78 @@ export class MetaApiClient {
 				extractMetaError(error)
 			}
 		})
+	}
+
+	private async uploadVideoChunked(
+		adAccountId: string,
+		filePath: string,
+		fileSize: number,
+	): Promise<VideoUploadResponse> {
+		const filename = path.basename(filePath)
+		const baseUrl = `${this.client.defaults.baseURL}/${adAccountId}/advideos`
+		const CHUNK_SIZE = 20 * 1024 * 1024
+
+		console.log(`  Using chunked upload for ${filename} (${(fileSize / 1024 / 1024).toFixed(1)} MB)`)
+
+		const startForm = new FormData()
+		startForm.append("upload_phase", "start")
+		startForm.append("file_size", String(fileSize))
+		startForm.append("access_token", this.accessToken)
+
+		const { data: startData } = await axios.post(baseUrl, startForm, {
+			headers: startForm.getHeaders(),
+		})
+		const uploadSessionId = startData.upload_session_id
+		const videoId = startData.video_id
+
+		if (!videoId) {
+			throw new Error(`Chunked upload start did not return a video ID. Response: ${JSON.stringify(startData)}`)
+		}
+
+		const fd = fs.openSync(filePath, "r")
+		let startOffset = Number(startData.start_offset)
+		let chunkIndex = 0
+
+		try {
+			while (startOffset < fileSize) {
+				const chunkLength = Math.min(CHUNK_SIZE, fileSize - startOffset)
+				const buffer = Buffer.alloc(chunkLength)
+				fs.readSync(fd, buffer, 0, chunkLength, startOffset)
+
+				const transferForm = new FormData()
+				transferForm.append("upload_phase", "transfer")
+				transferForm.append("upload_session_id", uploadSessionId)
+				transferForm.append("start_offset", String(startOffset))
+				transferForm.append("video_file_chunk", buffer, { filename: `chunk_${chunkIndex}` })
+				transferForm.append("access_token", this.accessToken)
+
+				const { data: transferData } = await axios.post(baseUrl, transferForm, {
+					headers: transferForm.getHeaders(),
+					maxContentLength: Number.POSITIVE_INFINITY,
+					maxBodyLength: Number.POSITIVE_INFINITY,
+				})
+
+				startOffset = Number(transferData.start_offset)
+				chunkIndex++
+				const progress = Math.min(100, Math.round((startOffset / fileSize) * 100))
+				console.log(`  Chunk ${chunkIndex} uploaded (${progress}%)`)
+			}
+		} finally {
+			fs.closeSync(fd)
+		}
+
+		const finishForm = new FormData()
+		finishForm.append("upload_phase", "finish")
+		finishForm.append("upload_session_id", uploadSessionId)
+		finishForm.append("title", filename)
+		finishForm.append("access_token", this.accessToken)
+
+		const { data: finishData } = await axios.post(baseUrl, finishForm, {
+			headers: finishForm.getHeaders(),
+		})
+
+		console.log(`  Upload complete: ${filename} → ${videoId}`)
+		return { id: String(videoId) } as VideoUploadResponse
 	}
 
 	async listCampaigns(
@@ -216,6 +295,17 @@ export class MetaApiClient {
 		return withRetry(async () => {
 			try {
 				const { data } = await this.client.get(`/${videoId}/thumbnails`)
+				return data
+			} catch (error) {
+				extractMetaError(error)
+			}
+		})
+	}
+
+	async getVideoStatus(videoId: string): Promise<{ status: { processing_progress?: number; video_status: string } }> {
+		return withRetry(async () => {
+			try {
+				const { data } = await this.client.get(`/${videoId}`, { params: { fields: "status" } })
 				return data
 			} catch (error) {
 				extractMetaError(error)

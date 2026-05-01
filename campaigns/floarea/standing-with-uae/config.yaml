@@ -1,0 +1,277 @@
+version: 1
+adAccountId: "act_279890659888368"
+
+existingCampaignId: "120244752089000028"
+
+adSets:
+  - ref: "uae_video_conversions"
+    name: "UAE All Ages All Genders - Video - Conversions"
+    campaignRef: "floarea_standing_with_uae"
+    status: "PAUSED"
+    promotedObject:
+      pixelId: "1835082704097073"
+      customEventType: "PURCHASE"
+    targeting:
+      geoLocations:
+        countries: ["AE"]
+    placements: "automatic"
+    billingEvent: "IMPRESSIONS"
+    optimizationGoal: "OFFSITE_CONVERSIONS"
+    attributionSpec:
+      - eventType: "CLICK_THROUGH"
+        windowDays: 7
+      - eventType: "VIEW_THROUGH"
+        windowDays: 1
+
+  - ref: "uae_ig_conversions"
+    name: "UAE All Ages All Genders - Instagram Only - Conversions"
+    campaignRef: "floarea_standing_with_uae"
+    status: "PAUSED"
+    promotedObject:
+      pixelId: "1835082704097073"
+      customEventType: "PURCHASE"
+    targeting:
+      geoLocations:
+        countries: ["AE"]
+    placements: "manual"
+    manualPlacements:
+      platforms: ["instagram"]
+      instagramPositions: ["stream", "story", "reels", "explore", "explore_home"]
+    billingEvent: "IMPRESSIONS"
+    optimizationGoal: "OFFSITE_CONVERSIONS"
+    attributionSpec:
+      - eventType: "CLICK_THROUGH"
+        windowDays: 7
+      - eventType: "VIEW_THROUGH"
+        windowDays: 1
+
+ads:
+  # ── Graphic 1 English ──
+  - ref: "g1_en"
+    name: "G1 English - Standing With UAE"
+    adSetRef: "uae_ig_conversions"
+    status: "PAUSED"
+    creative:
+      pageId: "773383349196089"
+
+      file: "G1 en V2.jpg"
+      primaryTexts:
+        - "Just like this country has always stood with us… it's our turn to give back, even in the smallest way. ❤️\n\nFor 1 week only, FLOAREA is offering 40% off across our collection 🌹\nso you can express your feelings to the people who matter most.\n\n⏰ 1-hour delivery across Dubai\n🎁 Free delivery over AED 400\n\nUse code UAE40 and be part of the gesture ✨"
+        - "In a time when everyone needs to feel supported, your presence is the biggest gift. 🌹\n\nThe UAE taught us that standing together is what matters most 🇦🇪\n\nFor 1 week only, FLOAREA is sharing the gesture with 40% off across our entire collection.\n\n⏰ 1-hour delivery across Dubai\n🎁 Free delivery over AED 400\n\nUse code UAE40 — show up today ❤️"
+        - "In moments like these, being there speaks louder than anything spoken. 🤍\n\nJust like the UAE has stood with everyone, let's stand with the people we love. 🇦🇪\n\nFor 1 week only, FLOAREA is offering 40% off across our collection 🌹\nso your gesture can arrive when it matters most.\n\n⏰ 1-hour delivery across Dubai\n🎁 Free delivery over AED 400\n\nUse code UAE40 and be part of the gesture ✨"
+        - "From the safety the UAE has given us, to the hearts of the people we love ❤️\n\nEvery gesture, no matter how small, carries meaning at a time like this 🌹\n\nFor 1 week only, FLOAREA is sharing the gesture with 40% off across our entire collection.\n\n⏰ 1-hour delivery across Dubai\n🎁 Free delivery over AED 400\n\nUse code UAE40 — order today ✨"
+        - "The UAE taught us that standing with one another is what lasts 🇦🇪\n\nAnd with the simplest gesture, you can send a powerful message to someone who matters ❤️\n\nFor 1 week only, FLOAREA is offering:\n🌹 40% off across our entire collection\n⏰ 1-hour delivery across Dubai\n🎁 Free delivery over AED 400\n\nUse code UAE40 — be part of the gesture ✨"
+      headlines:
+        - "Supporting local, together 🇦🇪"
+        - "It's our turn to stand with each other 🤍"
+        - "Sometimes, words aren't enough 💔"
+        - "We give back… because this country taught us how 🇦🇪"
+        - "The smallest gesture… makes the biggest difference 🌹"
+      callToAction: "SHOP_NOW"
+      landingPageUrl: "https://floarea.ae/collections/all"
+      urlTags: "utm_source=meta&utm_medium=paid&utm_campaign=standing_with_uae&utm_content=g1_en"
+      catalogId: "1417079589661732"
+
+  # ── Graphic 1 Arabic ──
+  - ref: "g1_arb"
+    name: "G1 Arabic - Standing With UAE"
+    adSetRef: "uae_ig_conversions"
+    status: "PAUSED"
+    creative:
+      pageId: "773383349196089"
+
+      file: "G1 arabic V3.jpg"
+      primaryTexts:
+        - "وبمثل ما هالبلد تعطينا الأمان والدعم... حان دورنا نعبّر ولو بشي بسيط ❤️\n\nلأسبوع واحد فقط — FLOAREA تقدم لك خصم 40% 🌹\nعشان توصل مشاعرك للي يهمّونك\n\n⏰ توصيل خلال ساعة في كل دبي\n🎁 توصيل مجاني فوق 400 درهم\n\nاستخدم كود UAE40 وخلّك جزء من اللفتة ✨"
+        - "في وقت الكل يحتاج فيه يحس بالدعم، حضورك هو أكبر هدية 🌹\n\nالإمارات علّمتنا إن الوقفة مع بعض هي اللي تفرق 🇦🇪\n\nلأسبوع واحد فقط — FLOAREA تشاركك اللفتة بخصم 40% على كامل التشكيلة\n\n⏰ توصيل خلال ساعة في دبي\n🎁 توصيل مجاني فوق 400 درهم\n\nكود UAE40 — عبّر اليوم ❤️"
+        - "في لحظات معينة، الحضور يسبق الكلام 🤍\n\nوبمثل ما الإمارات وقفت مع الجميع، خلّينا نوقف مع اللي نحبّهم 🇦🇪\n\nلأسبوع واحد فقط — FLOAREA تقدم لك خصم 40% 🌹\nعشان لفتتك توصل في وقتها\n\n⏰ توصيل خلال ساعة في دبي\n🎁 توصيل مجاني فوق 400 درهم\n\nاستخدم كود UAE40 وخلّك جزء من اللفتة ✨"
+        - "من أمان الإمارات إلى قلوب اللي نحبّهم ❤️\n\nكل لفتة، مهما كانت بسيطة، لها معنى في وقت زي هذا 🌹\n\nلأسبوع واحد فقط — FLOAREA تشاركك اللفتة بخصم 40% على كامل التشكيلة\n\n⏰ توصيل خلال ساعة في دبي\n🎁 توصيل مجاني فوق 400 درهم\n\nكود UAE40 — اطلب الحين ✨"
+        - "الإمارات علّمتنا إن الوقوف مع بعض هو اللي يبقى 🇦🇪\n\nوبأبسط لفتة، تقدر توصل رسالة كبيرة لشخص يهمّك ❤️\n\nلأسبوع واحد فقط — FLOAREA تقدم لك:\n🌹 خصم 40% على كامل المجموعة\n⏰ توصيل خلال ساعة في دبي\n🎁 توصيل مجاني فوق 400 درهم"
+      headlines:
+        - "الإمارات دايم واقفة مع الجميع 🇦🇪"
+        - "دورنا نكون جنب بعض 🤍"
+        - "أحيانًا الكلام ما يكفي 💔"
+        - "نعبّر... عشان هالبلد علّمتنا كيف 🇦🇪"
+        - "الوقفة الصغيرة... تصنع الفرق الكبير 🌹"
+      callToAction: "SHOP_NOW"
+      landingPageUrl: "https://floarea.ae/collections/all"
+      urlTags: "utm_source=meta&utm_medium=paid&utm_campaign=standing_with_uae&utm_content=g1_arb"
+      catalogId: "1417079589661732"
+
+  # ── Graphic 2 English ──
+  - ref: "g2_en"
+    name: "G2 English - Standing With UAE"
+    adSetRef: "uae_ig_conversions"
+    status: "PAUSED"
+    creative:
+      pageId: "773383349196089"
+
+      file: "G2 EN V3.jpg"
+      primaryTexts:
+        - "The UAE taught us that standing together is what matters most 🇦🇪\n\nAnd today, even the simplest gift can carry a powerful message ❤️\n\nFor 1 week only, FLOAREA is offering 40% off across our collection\nso you can stay close… even when words aren't enough.\n\n⏰ 1-hour delivery across Dubai\n🎁 Free delivery over AED 400\n\nUse code UAE40 and be the reason someone smiles ✨"
+        - "In a time when everyone needs to feel supported, let your gift speak for you 🌹\n\nThe UAE has always stood with us, and today it's our turn to stand with the people we love 🇦🇪\n\nFor 1 week only, FLOAREA is sharing the gesture with 40% off across our entire collection.\n\n⏰ 1-hour delivery across Dubai\n🎁 Free delivery over AED 400\n\nUse code UAE40 — order today ❤️"
+        - "In certain moments, you don't need to say anything 🤍\n\nThe simplest gesture can carry what words can't.\n\nAt a time like this, let your presence be felt 🇦🇪\n\nFor 1 week only, FLOAREA is offering:\n🌹 40% off across our entire collection\n⏰ 1-hour delivery across Dubai\n🎁 Free delivery over AED 400\n\nUse code UAE40 at checkout ❤️"
+        - "Care… and the gesture that reminds them of you every day 🌹\n\nThe UAE taught us that being there matters more than anything 🇦🇪\n\nAnd in times like these, a thoughtful gesture makes all the difference.\n\nFor 1 week only, FLOAREA is offering:\n✨ 40% off across our collection\n⏰ 1-hour delivery across Dubai\n🎁 Free delivery over AED 400\n\nUse code UAE40 and be part of the gesture ❤️"
+        - "Whether it's family, friends, or someone you care about — we're making it easier to show up with something that matters. ❤️\n\nThe UAE has always stood with everyone. Today, we stand with the people we love 🇦🇪\n\nFor 1 week only, FLOAREA is offering:\n✅ 40% off across our entire collection\n✅ 1-hour delivery across Dubai\n✅ Free delivery over AED 400\n\nUse code UAE40 and be part of the gesture ✨"
+      headlines:
+        - "Now more than ever, the small gestures matter 🌹"
+        - "Gifts that last… feelings that stay 🤍"
+        - "When words aren't enough… let the gift speak 🌹"
+        - "What stays after the words run out? 💭"
+        - "Show up with something meaningful 🌹"
+      callToAction: "SHOP_NOW"
+      landingPageUrl: "https://floarea.ae/collections/all"
+      urlTags: "utm_source=meta&utm_medium=paid&utm_campaign=standing_with_uae&utm_content=g2_en"
+      catalogId: "1417079589661732"
+
+  # ── Graphic 2 Arabic ──
+  - ref: "g2_arb"
+    name: "G2 Arabic - Standing With UAE"
+    adSetRef: "uae_ig_conversions"
+    status: "PAUSED"
+    creative:
+      pageId: "773383349196089"
+
+      file: "G2 ARABIC V3.jpg"
+      primaryTexts:
+        - "الإمارات علّمتنا إن الوقفة مع بعض هي الأساس 🇦🇪\n\nواليوم، أبسط هدية ممكن توصل رسالة كبيرة ❤️\n\nلأسبوع واحد فقط — FLOAREA تقدم لك خصم 40%\nعشان تظل قريب... حتى لو بالكلام ما يكفي\n\n⏰ توصيل خلال ساعة في دبي\n🎁 توصيل مجاني فوق 400 درهم\n\nاطلب الحين بكود UAE40 وخلّك سبب شعور جميل ✨"
+        - "في وقت الكل يحتاج فيه دعم، خلّي هديتك تحكي عنك 🌹\n\nالإمارات وقفت معانا دايم، واليوم دورنا نوقف مع اللي نحبّهم 🇦🇪\n\nلأسبوع واحد فقط — FLOAREA تشاركك اللفتة بخصم 40% على الورد\n\n⏰ توصيل خلال ساعة في دبي\n🎁 توصيل مجاني فوق 400 درهم\n\nكود UAE40 — اطلب اليوم ❤️"
+        - "في لحظات معينة، ما تحتاج تقول شي 🤍\n\nأبسط لفتة بتوصل إحساسك أكثر من أي كلمة\n\nبهالوقت، خلّي حضورك يكون ملموس 🇦🇪\n\nلأسبوع واحد فقط — FLOAREA تقدم لك:\n🌹 خصم 40% على الورد\n⏰ توصيل خلال ساعة في دبي\n🎁 توصيل مجاني فوق 400 درهم\n\nكود UAE40 — اطلب الحين ❤️"
+        - "الاهتمام... والورد اللي يذكّرهم فيك كل يوم 🌹\n\nالإمارات علّمتنا إن الحضور أهم من أي شي 🇦🇪\n\nوفي وقت زي هذا، لفتة من القلب تفرق\n\nFLOAREA تقدم:\n✨ خصم 40% على الزهور الفوريفر\n⏰ توصيل في ساعة داخل دبي\n🎁 توصيل مجاني فوق 400 درهم\n\nكود UAE40 — خلّك جزء من اللفتة ❤️"
+        - "في وقت كل شخص محتاج يحس إنه مو لحاله، خلّي هديتك تبقى في البيت والقلب ❤️\n\nالإمارات دايم وقفت مع الجميع، واليوم اللفتة تبدأ منّا 🇦🇪\n\nFLOAREA تقدم لك:\n✅ زهور فوريفر تدوم لسنوات\n✅ خصم 40% لفترة محدودة\n✅ توصيل خلال ساعة في دبي\n✅ توصيل مجاني فوق 400 درهم\n\nكود UAE40 — اطلب الحين وخلّك سبب شعور جميل ✨"
+      headlines:
+        - "بهالفترة... اللفتة الصغيرة تصنع فرق كبير 🌹"
+        - "ورود تدوم... ومشاعر تبقى 🤍"
+        - "لما الكلام ما يكفي... الورد يحكي 🌹"
+        - "شو اللي يبقى بعد ما الكلام يخلص؟ 💭"
+        - "لفتة بسيطة... تدوم لسنوات 🌹"
+      callToAction: "SHOP_NOW"
+      landingPageUrl: "https://floarea.ae/collections/all"
+      urlTags: "utm_source=meta&utm_medium=paid&utm_campaign=standing_with_uae&utm_content=g2_arb"
+      catalogId: "1417079589661732"
+
+  # ── Graphic 3 English ──
+  - ref: "g3_en"
+    name: "G3 English - Standing With UAE"
+    adSetRef: "uae_ig_conversions"
+    status: "PAUSED"
+    creative:
+      pageId: "773383349196089"
+
+      file: "G3 EN V2.jpg"
+      primaryTexts:
+        - "At a time when everyone needs support, let your gift reflect how you truly feel ❤️\n\nThe UAE taught us that standing with each other is the foundation, and today the gesture starts with us 🇦🇪\n\nFor 1 week only, with FLOAREA, giving from the heart is easier.\n\n🌹 40% off across our entire collection\n⏰ 1-hour delivery across Dubai\n🎁 Free delivery over AED 400\n\nUse UAE40 today ✨"
+        - "The UAE taught us that being there for each other is what matters most ❤️\n\nAnd when everyone expresses it their own way, the gesture grows 🌹\n\nFor 1 week only, FLOAREA is sharing the gesture with 40% off across our entire collection.\n\n⏰ 1-hour delivery across Dubai\n🎁 Free delivery over AED 400\n\nUse code UAE40 and be part of the gesture ✨"
+        - "A small gesture today… becomes a big memory tomorrow ❤️\n\nAt a time like this, being there is the biggest gift 🌹\n\nFor 1 week only, FLOAREA is offering:\n💐 40% off across our entire collection\n⏰ 1-hour delivery across Dubai\n🎁 Free delivery over AED 400\n\nUse code UAE40 — order today 🇦🇪"
+        - "At a time when everyone needs to feel they're not alone, the simplest gift carries the message ❤️\n\nThe UAE has always stood with us, and today the gesture starts with us 🇦🇪\n\nFor 1 week only, FLOAREA is offering:\n🌹 40% off across our entire collection\n⏰ 1-hour delivery across Dubai\n🎁 Free delivery over AED 400\n\nUse code UAE40 — order today"
+        - "At a time when everyone needs support, even the simplest gift holds weight ❤️\n\nThe UAE taught us that standing with each other is what makes the difference 🇦🇪\n\nFLOAREA is sharing the gesture:\n✅ 40% off across our entire collection\n✅ 1-hour delivery across Dubai\n✅ Free delivery over AED 400\n✅ Fresh blooms, bouquets, and lasting gifts\n\nUse code UAE40 — 1 week only ⏳"
+      headlines:
+        - "Care… is what lasts 🤍"
+        - "One gesture. One stand. A bigger difference 🇦🇪"
+        - "When was the last time you told someone you're there? 💭"
+        - "From one heart to another 🤍"
+        - "Every gesture… carries meaning right now 🌹"
+      callToAction: "SHOP_NOW"
+      landingPageUrl: "https://floarea.ae/collections/all"
+      urlTags: "utm_source=meta&utm_medium=paid&utm_campaign=standing_with_uae&utm_content=g3_en"
+      catalogId: "1417079589661732"
+
+  # ── Graphic 3 Arabic ──
+  - ref: "g3_arb"
+    name: "G3 Arabic - Standing With UAE"
+    adSetRef: "uae_ig_conversions"
+    status: "PAUSED"
+    creative:
+      pageId: "773383349196089"
+
+      file: "G3 ARABIC V2.jpg"
+      primaryTexts:
+        - "في وقت الكل يحتاج فيه دعم، خلّي هديتك تعكس شعورك الحقيقي ❤️\n\nالإمارات علّمتنا إن الوقفة مع بعض هي الأساس، واليوم اللفتة تبدأ منّا 🇦🇪\n\nلأسبوع واحد فقط — مع FLOAREA، صار أسهل تعطي من قلبك:\n✨ خصم 40% لفترة محدودة\n⏰ توصيل خلال ساعة في دبي\n🎁 توصيل مجاني فوق 400 درهم\n\nاستخدم UAE40 اليوم 💐"
+        - "الإمارات علّمتنا إن الحضور مع بعض هو الأساس ❤️\n\nولما كل شخص يعبّر بطريقته، اللفتة تكبر 🌹\n\nلأسبوع واحد فقط — FLOAREA تشاركك اللفتة:\n💐 خصم 40% على كامل التشكيلة\n⏰ توصيل خلال ساعة في دبي\n🎁 توصيل مجاني فوق 400 درهم\n\nكود UAE40 — خلّك جزء من الوقفة ✨"
+        - "اللفتة الصغيرة اليوم... تبقى ذكرى كبيرة بكرا ❤️\n\nفي وقت زي هذا، الحضور هو أكبر هدية 🌹\n\nلأسبوع واحد فقط — FLOAREA تقدم لك:\n💐 خصم 40% على كامل التشكيلة\n⏰ توصيل خلال ساعة في دبي\n🎁 توصيل مجاني فوق 400 درهم\n\nكود UAE40 — اطلب الحين 🇦🇪"
+        - "في وقت الكل محتاج فيه يحس إنه مو لحاله، أبسط هدية توصل الرسالة ❤️\n\nالإمارات وقفت معنا دايم، واليوم اللفتة تبدأ منا 🇦🇪\n\nلأسبوع واحد فقط — FLOAREA تقدم لك:\n🌹 خصم 40% على كامل التشكيلة\n⏰ توصيل خلال ساعة في دبي\n🎁 توصيل مجاني فوق 400 درهم\n\nكود UAE40 — اطلب اليوم"
+        - "بوقت الكل محتاج فيه دعم، حتى أبسط هدية تحمل معنى كبير ❤️\n\nالإمارات علّمتنا إن الوقوف مع بعض هو اللي يفرق 🇦🇪\n\nFLOAREA تشاركك اللفتة:\n✅ خصم 40% على كامل التشكيلة\n✅ توصيل خلال ساعة في دبي\n✅ توصيل مجاني فوق 400 درهم\n✅ زهور طبيعية وفوريفر\n\nكود UAE40 — أسبوع واحد فقط ⏳"
+      headlines:
+        - "الاهتمام... هو اللي يبقى 🌹🇦🇪"
+        - "وقفة وحدة... تصنع فرق كبير 🇦🇪"
+        - "متى آخر مرة قلت للي تحبّهم إنك معاهم؟ 💭"
+        - "قرب من القلب... بورود من القلب 🤍"
+        - "كل لفتة... لها معنى بهالوقت 🌹"
+      callToAction: "SHOP_NOW"
+      landingPageUrl: "https://floarea.ae/collections/all"
+      urlTags: "utm_source=meta&utm_medium=paid&utm_campaign=standing_with_uae&utm_content=g3_arb"
+      catalogId: "1417079589661732"
+
+  # ── Too Late For Gift — VO Video ──
+  - ref: "too_late_for_gift"
+    name: "Too Late For Gift - VO Video - Standing With UAE"
+    adSetRef: "uae_video_conversions"
+    status: "PAUSED"
+    creative:
+      pageId: "773383349196089"
+      file: "videos/too-late-for-gift.mp4"
+      primaryTexts:
+        - "Still looking for a gift? 😅💐\n\nDon't worry — Floarea delivers luxury flowers across Dubai in as little as 1 hour. 🚪✨\n\nFresh bouquets. Forever roses. Gifting that looks like you planned ahead. 😉🌹\n\nAnd right now — everything is 40% off with code UAE40. ⏳\n\nThe offer is almost over. Don't wait.\n\n🚚 Free delivery on orders above AED 400\n💝 Order online, delivered to her door"
+        - "⏳ Our 40% off sale is ending very soon.\n\nLuxury flowers. Forever roses. Elegant gifts — delivered anywhere in Dubai in as little as 1 hour. 💐✨\n\nPerfect for birthdays, anniversaries, or \"just because she deserves it.\" 💝\n\nUse code UAE40 at checkout before it's gone.\n\n🌹 Fresh bouquets + Forever roses\n🚚 Free delivery over AED 400\n⚡ Same-day delivery across Dubai\n\nSurprise her with something she'll actually remember. 💍"
+        - "When was the last time you surprised her? 🌹💭\n\nDon't let another week pass. Floarea delivers luxury blossoms that last forever across Dubai — in as little as 1 hour. ⚡✨\n\nRight now, take 40% off everything with code UAE40.\n\nBut hurry — the sale is almost over. ⏳\n\n💐 Fresh bouquets + Forever roses\n🎁 Elegant gifting, beautifully wrapped\n🚚 Free delivery on orders above AED 400\n\nShe deserves a little luxury. Give it to her today. 💝"
+        - "Forgot to plan something special? 😬💐\n\nFloarea has you covered. Luxury flowers delivered anywhere in Dubai in as little as 1 hour — so you look like you had it all figured out. 😎✨\n\nAnd right now? 40% off everything with code UAE40. ⏳\n\nThe offer ends soon — don't wait until it's too late.\n\n🌹 Fresh bouquets that wow\n💝 Forever roses that last forever\n🚚 Free delivery over AED 400\n\nMake her smile today. Not tomorrow."
+        - "Been scrolling for hours trying to find her the perfect gift? 😩💭\n\nStop. You've already found it. 🌹\n\nFloarea — luxury flowers and forever roses, delivered anywhere in Dubai in as little as 1 hour. ⚡✨\n\nNo more guessing. No more \"will she like this?\" Just open the box, watch her smile, take the win. 😎💝\n\nAnd right now, everything is 40% off with code UAE40. ⏳\n\nThe sale is almost over — don't overthink it.\n\n💐 Fresh bouquets + Forever roses\n🎁 Elegant gifting, beautifully wrapped\n🚚 Free delivery on orders above AED 400"
+      headlines:
+        - "40% Off Ends Soon — Use Code UAE40 🌹"
+        - "40% Off Luxury Flowers — Ends Soon ⏳"
+        - "Surprise Her With 40% Off — Code UAE40 🌹"
+        - "40% Off Luxury Flowers Across Dubai 💐"
+        - "Still Searching For Her Gift? Get 40% Off 🌹"
+      callToAction: "SHOP_NOW"
+      landingPageUrl: "https://floarea.ae/collections/all"
+      urlTags: "utm_source=meta&utm_medium=paid&utm_campaign=standing_with_uae&utm_content=v24_vo"
+
+  # ── Tapping On Card — Card Machine Video ──
+  - ref: "tapping_on_card"
+    name: "Tapping On Card - Card Machine - Standing With UAE"
+    adSetRef: "uae_video_conversions"
+    status: "PAUSED"
+    creative:
+      pageId: "773383349196089"
+      file: "videos/tapping-on-card.mp4"
+      primaryTexts:
+        - "\"Do you have anything for men?\" 👀\n\nYes. A 40% off code. 😂\n\nUse UAE40 at checkout and surprise her with luxury flowers delivered across Dubai in as little as 1 hour. 💐⚡\n\nFresh bouquets. Forever roses. Elegant gifting that makes you look like a hero. 🌹✨\n\nThe sale is almost over — don't wait.\n\n🚚 Free delivery on orders above AED 400\n🎁 Delivered to her door, same day\n⏳ Offer ending soon"
+        - "Looking for something for the woman in your life? 💭🌹\n\nSkip the card machine. 😅\n\nFloarea delivers luxury flowers, forever roses, and elegant gifts across Dubai in as little as 1 hour — and right now everything is 40% off with code UAE40. ⚡✨\n\nShe'll think you planned this for weeks. 😎💝\n\nThe sale is almost over. Order before it's gone.\n\n💐 Fresh bouquets + Forever roses\n🎁 Beautifully wrapped, ready to gift\n🚚 Free delivery over AED 400"
+        - "Gifting her shouldn't feel harder than your job. 😮‍💨🌹\n\nOpen Floarea. Pick a bouquet. Check out. Done. 📱✨\n\nLuxury flowers and forever roses delivered anywhere in Dubai in as little as 1 hour — no overthinking required. ⚡💐\n\nUse code UAE40 for 40% off everything. The sale is almost over.\n\n🌹 Fresh bouquets + Forever roses\n🎁 Beautifully wrapped, ready to gift\n🚚 Free delivery on orders above AED 400\n💝 Same-day delivery across Dubai\n\nThree taps. One happy woman. You're welcome. 😎"
+        - "While you're scrolling, she's waiting. 🌹⏳\n\nDon't miss this one — Floarea is taking 40% off every bouquet, every forever rose, every gift. Code: UAE40 ✨\n\nOrder online and we'll deliver anywhere in Dubai in as little as 1 hour. ⚡💐\n\nThe sale is ending very soon. Blink and it's gone.\n\n💐 Fresh bouquets + Forever roses\n🎁 Luxury gifting, beautifully wrapped\n🚚 Free delivery on orders above AED 400\n📱 Order from your phone, delivered same-day\n\nBe the guy who sent flowers today. 😎💝"
+        - "If you're standing there wondering what to get her… 😅\n\nStop wondering. Start scrolling. 🌹\n\nFloarea — luxury flowers and forever roses delivered anywhere in Dubai in as little as 1 hour. ⚡💐\n\nUse code UAE40 for 40% off everything. The sale is ending soon — this is your sign to just do it. ✨\n\n💐 Fresh bouquets + Forever roses\n🎁 Beautifully wrapped, ready to gift\n🚚 Free delivery over AED 400\n⏰ Same-day delivery across Dubai\n\nShe'll remember this one. 💝"
+      headlines:
+        - "40% Off Luxury Flowers — Code UAE40 🌹"
+        - "40% Off Ending Soon — Use Code UAE40 ⏳"
+        - "Last Chance: 40% Off Flowers — UAE40 🌹"
+        - "40% Off Ends Soon — Order Online 🌹"
+        - "40% Off Ends Soon — Code UAE40 🌹"
+      callToAction: "SHOP_NOW"
+      landingPageUrl: "https://floarea.ae/collections/all"
+      urlTags: "utm_source=meta&utm_medium=paid&utm_campaign=standing_with_uae&utm_content=vextra_card_machine"
+
+  # ── Graphic 4 Arabic ──
+  - ref: "g4_arb"
+    name: "G4 Arabic - Standing With UAE"
+    adSetRef: "uae_ig_conversions"
+    status: "PAUSED"
+    creative:
+      pageId: "773383349196089"
+
+      file: "G4 ARABIC V3.jpg"
+      primaryTexts:
+        - "لو بكلمة، بهدية، أو حتى وردة... خلّك قريب من اللي يهمّونك ❤️\n\nبهالوقت، الحضور هو أكبر لفتة 🌹\n\nلأسبوع واحد فقط — FLOAREA تقدم لك:\n✨ خصم 40% على كل شي\n⏰ توصيل خلال ساعة في دبي\n🎁 توصيل مجاني فوق 400 درهم\n\nكود UAE40 — عشان اللفتة توصل في وقتها ✨"
+        - "لا تأجّل ما تقدر تعبّر عنه اليوم 🌹\n\nالإمارات علّمتنا إن الأفعال تسبق الكلام 🇦🇪\n\nلأسبوع واحد فقط — FLOAREA تشاركك اللفتة:\n💐 خصم 40% على كامل التشكيلة\n⏰ توصيل خلال ساعة في كل دبي\n🎁 توصيل مجاني فوق 400 درهم\n\nكود UAE40 — اطلب الحين ❤️"
+        - "إنك تتذكّره بلفتة بسيطة ❤️\n\nالإمارات علّمتنا إن الحضور هو اللي يبقى 🇦🇪\n\nلأسبوع واحد فقط — مع FLOAREA:\n✨ خصم 40% على كامل المجموعة\n⏰ توصيل خلال ساعة في دبي\n🎁 توصيل مجاني فوق 400 درهم\n\nكود UAE40 — اطلب اليوم 🌹"
+        - "خلّي هديتك تتكلم عنك 🌹\n\nفي وقت زي هذا، الأفعال الصغيرة تحمل معاني كبيرة ❤️\n\nوبمثل ما الإمارات وقفت مع الجميع، خلّينا نوقف مع اللي نحبّهم 🇦🇪\n\nلأسبوع واحد فقط — FLOAREA تقدم لك:\n🎁 خصم 40% على كل شي\n⏰ توصيل خلال ساعة في دبي\n🎁 توصيل مجاني فوق 400 درهم\n\nكود UAE40 — خلّك جزء من اللفتة"
+        - "بهالوقت، اللفتة الصغيرة تفرق 🇦🇪\n\nالإمارات علّمتنا إن الوقفة مع بعض هي الأساس، واليوم دورنا ❤️\n\nFLOAREA تشاركك اللفتة:\n✅ توصيل خلال ساعة في دبي\n✅ خصم 40% على كامل التشكيلة\n✅ توصيل مجاني فوق 400 درهم\n✅ زهور، باقات، وهدايا تدوم\n\nكود UAE40 — أسبوع واحد فقط ⏳"
+      headlines:
+        - "مو وقت كلام... وقت أفعال 🇦🇪"
+        - "اللفتة اللي توصل في وقتها... تبقى في القلب 💐"
+        - "شو أكثر شي بيفرح الشخص اللي تحبّه اليوم؟ 💭"
+        - "الكلام وحده ما يكفي 💔"
+        - "لفتة توصل في وقتها... أجمل من ألف كلمة 🌹"
+      callToAction: "SHOP_NOW"
+      landingPageUrl: "https://floarea.ae/collections/all"
+      urlTags: "utm_source=meta&utm_medium=paid&utm_campaign=standing_with_uae&utm_content=g4_arb"
+      catalogId: "1417079589661732"

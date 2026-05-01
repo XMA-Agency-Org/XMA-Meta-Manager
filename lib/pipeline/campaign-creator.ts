@@ -18,6 +18,7 @@ export async function createCampaign(
 		...(campaign.bidStrategy && { bid_strategy: campaign.bidStrategy }),
 		...(campaign.dailyBudget && { daily_budget: campaign.dailyBudget }),
 		...(campaign.campaignBudgetOptimization && { campaign_budget_optimization: true }),
+		...(!campaign.campaignBudgetOptimization && { is_adset_budget_sharing_enabled: false }),
 	}
 
 	const result = await client.createCampaign(ctx.adAccountId, params)

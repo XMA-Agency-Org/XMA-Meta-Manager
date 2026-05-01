@@ -36,6 +36,9 @@ function buildTargetingSpec(targeting: ConfigTargeting): TargetingSpec {
 	if (targeting.flexibleSpec) {
 		spec.flexible_spec = targeting.flexibleSpec
 	}
+	if (targeting.userOs) {
+		spec.user_os = targeting.userOs
+	}
 
 	;(spec as Record<string, unknown>).targeting_automation = {
 		advantage_audience: targeting.advantageAudience ? 1 : 0,
@@ -83,6 +86,7 @@ export async function createAdSet(
 				}),
 			},
 		}),
+		bid_strategy: "LOWEST_COST_WITHOUT_CAP",
 		...(adSet.dailyBudget && { daily_budget: adSet.dailyBudget }),
 		...(adSet.lifetimeBudget && { lifetime_budget: adSet.lifetimeBudget }),
 		...(adSet.startTime && { start_time: adSet.startTime }),

@@ -39,6 +39,7 @@ export const ConfigTargeting = z.object({
 	excludedCustomAudiences: z.array(z.string()).default([]),
 	flexibleSpec: z.array(z.record(z.string(), z.unknown())).optional(),
 	advantageAudience: z.boolean().default(false),
+	userOs: z.array(z.string()).optional(),
 })
 
 export type ConfigTargeting = z.infer<typeof ConfigTargeting>
@@ -71,7 +72,7 @@ export const ConfigAdSet = z.object({
 			instagramPositions: z.array(z.string()).optional(),
 		})
 		.optional(),
-	destinationType: z.enum(["WEBSITE", "ON_AD", "MESSENGER", "WHATSAPP"]).optional(),
+	destinationType: z.enum(["WEBSITE", "ON_AD", "MESSENGER", "WHATSAPP", "INSTAGRAM_PROFILE"]).optional(),
 	billingEvent: z
 		.enum(["IMPRESSIONS", "LINK_CLICKS", "POST_ENGAGEMENT", "VIDEO_VIEWS"])
 		.default("IMPRESSIONS"),
@@ -114,8 +115,9 @@ export const ConfigAdCreative = z
 		description: z.string().optional(),
 		callToAction: z.string().default("LEARN_MORE"),
 		leadFormId: z.string().optional(),
-		landingPageUrl: z.string().url(),
+		landingPageUrl: z.string().url().optional(),
 		urlTags: z.string().optional(),
+		catalogId: z.string().optional(),
 	})
 	.refine((data) => data.file || data.slides, {
 		message: "Either 'file' (single creative) or 'slides' (carousel) must be provided",

@@ -12,20 +12,25 @@ import { persistPipelineResult } from "@/db/persist"
 import { writeResult } from "./result-writer"
 
 function loadExistingIds(configDir: string): {
+	campaign: { ref: string; metaId: string } | null
 	adSets: Map<string, string>
 	adCreatives: Map<string, string>
 	ads: Map<string, string>
 } {
 	const resultPath = path.join(configDir, "_result.yaml")
+	let campaign: { ref: string; metaId: string } | null = null
 	const adSets = new Map<string, string>()
 	const adCreatives = new Map<string, string>()
 	const ads = new Map<string, string>()
 
-	if (!fs.existsSync(resultPath)) return { adSets, adCreatives, ads }
+	if (!fs.existsSync(resultPath)) return { campaign, adSets, adCreatives, ads }
 
 	try {
 		const raw = fs.readFileSync(resultPath, "utf-8")
 		const result = parseYaml(raw)
+		if (result?.campaign?.ref && result?.campaign?.metaId) {
+			campaign = { ref: result.campaign.ref, metaId: String(result.campaign.metaId) }
+		}
 		if (Array.isArray(result?.adSets)) {
 			for (const entry of result.adSets) {
 				if (entry.ref && entry.metaId) {
@@ -51,7 +56,7 @@ function loadExistingIds(configDir: string): {
 		// ignore parse errors
 	}
 
-	return { adSets, adCreatives, ads }
+	return { campaign, adSets, adCreatives, ads }
 }
 
 export interface ExecutorOptions {
@@ -84,12 +89,18 @@ export async function runPipeline(
 	}
 
 	try {
-		const { adSets: existingAdSets, adCreatives: existingAdCreatives, ads: existingAds } = loadExistingIds(configDir)
+		const { campaign: existingCampaign, adSets: existingAdSets, adCreatives: existingAdCreatives, ads: existingAds } = loadExistingIds(configDir)
 
 		await uploadCreatives(config, creativesDir, client, ctx)
 
 		if (config.campaign) {
-			await createCampaign(config.campaign, client, ctx)
+			if (existingCampaign?.ref === config.campaign.ref) {
+				console.log(`\nUsing cached campaign "${config.campaign.name}" → ${existingCampaign.metaId}`)
+				ctx.setRef(config.campaign.ref, existingCampaign.metaId)
+				ctx.trackCreated({ type: "campaign", ref: config.campaign.ref, metaId: existingCampaign.metaId, name: config.campaign.name })
+			} else {
+				await createCampaign(config.campaign, client, ctx)
+			}
 		}
 
 		for (const adSet of config.adSets) {
