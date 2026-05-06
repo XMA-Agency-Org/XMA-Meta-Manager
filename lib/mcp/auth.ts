@@ -4,10 +4,13 @@ export async function verifyToken(
 	req: Request,
 	bearerToken?: string,
 ): Promise<AuthInfo | undefined> {
-	const token = bearerToken ?? new URL(req.url).searchParams.get("token") ?? undefined
-	if (!token) return undefined
+	const apiKey = process.env.MCP_API_KEY
+	if (apiKey) {
+		const provided = bearerToken ?? new URL(req.url).searchParams.get("token") ?? undefined
+		if (provided !== apiKey) return undefined
+	}
 	return {
-		token,
+		token: process.env.META_APP_TOKEN ?? "",
 		clientId: "meta",
 		scopes: ["meta:write"],
 	}
