@@ -5,7 +5,9 @@ import postgres from "postgres"
 export const maxDuration = 60
 
 const STATEMENTS = [
-	`CREATE TABLE IF NOT EXISTS "clients" (
+	`DROP TABLE IF EXISTS "ad_accounts" CASCADE`,
+	`DROP TABLE IF EXISTS "clients" CASCADE`,
+	`CREATE TABLE "clients" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
   "slug" text NOT NULL,
   "name" text NOT NULL,
@@ -13,7 +15,7 @@ const STATEMENTS = [
   "createdAt" timestamp DEFAULT now() NOT NULL,
   CONSTRAINT "clients_slug_unique" UNIQUE("slug")
 )`,
-	`CREATE TABLE IF NOT EXISTS "ad_accounts" (
+	`CREATE TABLE "ad_accounts" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
   "clientId" uuid NOT NULL,
   "metaId" text NOT NULL,
