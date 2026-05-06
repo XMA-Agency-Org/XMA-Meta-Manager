@@ -4,9 +4,9 @@ export async function verifyToken(
 	req: Request,
 	bearerToken?: string,
 ): Promise<AuthInfo | undefined> {
-	const apiKey = process.env.MCP_API_KEY
+	const apiKey = process.env.MCP_API_KEY?.trim()
 	if (apiKey) {
-		const provided = bearerToken ?? new URL(req.url).searchParams.get("token") ?? undefined
+		const provided = bearerToken?.trim() ?? new URL(req.url).searchParams.get("token")?.trim() ?? undefined
 		if (provided !== apiKey) return undefined
 	}
 	return {
