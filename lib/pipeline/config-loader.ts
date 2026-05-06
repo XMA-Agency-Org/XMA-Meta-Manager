@@ -42,6 +42,7 @@ function validateCreativeFiles(config: PipelineConfig, creativesDir: string): vo
 
 		if (ad.creative.slides) {
 			for (const slide of ad.creative.slides) {
+				if (!slide.file) continue
 				const filePath = path.join(creativesDir, slide.file)
 				if (!fs.existsSync(filePath)) {
 					missingFiles.push(slide.file)
