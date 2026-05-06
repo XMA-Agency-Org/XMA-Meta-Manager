@@ -111,5 +111,9 @@ export async function POST(req: Request) {
 		await client.end()
 	}
 
-	return Response.json({ ok: true, results })
+	const check = await db.execute(sql.raw(
+		`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ('clients','ad_accounts','campaign_snapshots','ad_set_snapshots','ad_snapshots') ORDER BY table_name`
+	))
+
+	return Response.json({ ok: true, results, tablesFound: check.map((r: Record<string, unknown>) => r.table_name), urlPrefix: unpooledUrl.slice(0, 30) })
 }
