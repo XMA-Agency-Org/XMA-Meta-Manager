@@ -38,37 +38,55 @@ function loadExistingCreativeIds(configDir: string): Map<string, string> {
 	return existing
 }
 
+interface CreativeSource {
+	key: string
+	file?: string
+	fileUrl?: string
+}
+
 export async function uploadCreatives(
 	config: PipelineConfig,
 	creativesDir: string,
 	client: MetaApiClient,
 	ctx: PipelineContext,
 ): Promise<void> {
-	const allFiles: string[] = []
+	const allSources: CreativeSource[] = []
 	for (const ad of config.ads) {
-		if (ad.creative.file) allFiles.push(ad.creative.file)
+		if (ad.creative.fileUrl) {
+			allSources.push({ key: `url:${ad.creative.fileUrl}`, fileUrl: ad.creative.fileUrl })
+		} else if (ad.creative.file) {
+			allSources.push({ key: `file:${ad.creative.file}`, file: ad.creative.file })
+		}
 		if (ad.creative.slides) {
-			for (const slide of ad.creative.slides) allFiles.push(slide.file)
+			for (const slide of ad.creative.slides) {
+				if (slide.fileUrl) {
+					allSources.push({ key: `url:${slide.fileUrl}`, fileUrl: slide.fileUrl })
+				} else if (slide.file) {
+					allSources.push({ key: `file:${slide.file}`, file: slide.file })
+				}
+			}
 		}
 	}
-	const uniqueFiles = [...new Set(allFiles)]
-	if (uniqueFiles.length === 0) return
+
+	const seen = new Set<string>()
+	const uniqueSources = allSources.filter((s) => {
+		if (seen.has(s.key)) return false
+		seen.add(s.key)
+		return true
+	})
+
+	if (uniqueSources.length === 0) return
 
 	const existingIds = loadExistingCreativeIds(path.dirname(creativesDir))
-	const toUpload = uniqueFiles.filter((f) => !existingIds.has(f))
-	const cached = uniqueFiles.filter((f) => existingIds.has(f))
+	const toUpload = uniqueSources.filter((s) => !existingIds.has(s.key))
+	const cached = uniqueSources.filter((s) => existingIds.has(s.key))
 
 	if (cached.length > 0) {
 		console.log(`\nUsing ${cached.length} cached creative(s) from _result.yaml`)
-		for (const filename of cached) {
-			const assetId = existingIds.get(filename)!
-			ctx.setRef(`file:${filename}`, assetId)
-			ctx.trackCreated({
-				type: "creative",
-				ref: `file:${filename}`,
-				metaId: assetId,
-				name: filename,
-			})
+		for (const source of cached) {
+			const assetId = existingIds.get(source.key)!
+			ctx.setRef(source.key, assetId)
+			ctx.trackCreated({ type: "creative", ref: source.key, metaId: assetId, name: source.key })
 		}
 	}
 
@@ -76,32 +94,40 @@ export async function uploadCreatives(
 
 	console.log(`\nUploading ${toUpload.length} creative(s)...`)
 
-	for (const filename of toUpload) {
-		const filePath = path.join(creativesDir, filename)
-		const mediaType = getMediaType(filename)
-
-		if (mediaType === "image") {
-			const result = await client.uploadImage(config.adAccountId, filePath)
-			const imageEntry = Object.values(result.images)[0]
-			if (!imageEntry?.hash) {
-				throw new Error(`Failed to get image hash for ${filename}`)
+	for (const source of toUpload) {
+		if (source.fileUrl) {
+			const urlFilename = path.basename(new URL(source.fileUrl).pathname) || source.fileUrl
+			const mediaType = getMediaType(urlFilename)
+			if (mediaType === "image") {
+				const result = await client.uploadImageFromUrl(config.adAccountId, source.fileUrl)
+				const imageEntry = Object.values(result.images)[0]
+				if (!imageEntry?.hash) throw new Error(`Failed to get image hash for ${source.fileUrl}`)
+				ctx.setRef(source.key, imageEntry.hash)
+				ctx.trackCreated({ type: "creative", ref: source.key, metaId: imageEntry.hash, name: urlFilename })
+			} else {
+				const result = await client.uploadVideoFromUrl(config.adAccountId, source.fileUrl)
+				ctx.setRef(source.key, result.id)
+				ctx.trackCreated({ type: "creative", ref: source.key, metaId: result.id, name: urlFilename })
 			}
-			ctx.setRef(`file:${filename}`, imageEntry.hash)
-			ctx.trackCreated({
-				type: "creative",
-				ref: `file:${filename}`,
-				metaId: imageEntry.hash,
-				name: filename,
-			})
-		} else {
-			const result = await client.uploadVideo(config.adAccountId, filePath)
-			ctx.setRef(`file:${filename}`, result.id)
-			ctx.trackCreated({
-				type: "creative",
-				ref: `file:${filename}`,
-				metaId: result.id,
-				name: filename,
-			})
+		} else if (source.file) {
+			if (process.env.PIPELINE_LOCAL_FS !== "1") {
+				throw new Error(
+					`Local file uploads are disabled in this environment. Use 'fileUrl' instead of 'file'. Set PIPELINE_LOCAL_FS=1 to allow local file uploads (local dev only).`,
+				)
+			}
+			const filePath = path.join(creativesDir, source.file)
+			const mediaType = getMediaType(source.file)
+			if (mediaType === "image") {
+				const result = await client.uploadImage(config.adAccountId, filePath)
+				const imageEntry = Object.values(result.images)[0]
+				if (!imageEntry?.hash) throw new Error(`Failed to get image hash for ${source.file}`)
+				ctx.setRef(source.key, imageEntry.hash)
+				ctx.trackCreated({ type: "creative", ref: source.key, metaId: imageEntry.hash, name: source.file })
+			} else {
+				const result = await client.uploadVideo(config.adAccountId, filePath)
+				ctx.setRef(source.key, result.id)
+				ctx.trackCreated({ type: "creative", ref: source.key, metaId: result.id, name: source.file })
+			}
 		}
 	}
 }

@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 XMA Meta Manager — a Next.js 16 app + CLI pipeline for agency management of Meta ad campaigns. The primary workflow today is a YAML config-driven pipeline that creates full Meta campaigns (campaign → ad sets → ads) from the command line, with optional PostgreSQL persistence. The web dashboard is scaffolded but minimal (redirects to `/overview`).
 
+A **remote MCP server** is also served at `/api/mcp` (HTTP transport). Bearer auth: pass the Meta access token as `Authorization: Bearer <token>`. Registered tools: `meta_list_pages`, `meta_list_campaigns`, `meta_list_adsets`, `meta_get_video_status`, `meta_get_video_thumbnails`, `meta_search_geo`, `meta_get_campaign_tree`, `meta_lookup_ref`, `meta_list_refs`, `meta_forget_ref`, `meta_upload_image_from_url`, `meta_upload_video_from_url`, `meta_create_campaign`, `meta_create_adset`, `meta_create_ad`, `meta_run_pipeline`.
+
 ## Commands
 
 ```bash
@@ -146,6 +148,30 @@ Required in `.env.local`:
 - **Placement default:** Always target iOS only (`publisher_platforms: ["instagram"]`, `device_platforms: ["mobile"]`, `user_os: ["iOS"]`, `instagram_positions: ["stream","story","reels"]`). Never include Facebook placements unless explicitly requested.
 - Zod v4 requires `import { z } from "zod/v4"` (not `"zod"`)
 - `next.config.ts` lists `sharp` in `serverExternalPackages`
+
+## MCP Server
+
+Route: `app/api/[transport]/route.ts` — `mcp-handler` stateless HTTP transport.
+Auth: `withMcpAuth` — bearer token = Meta access token, verified by Meta API itself.
+Refs: global namespace in `entity_refs` Postgres table. `lib/mcp/refs.ts` for CRUD.
+Tools: `lib/mcp/tools.ts` — each tool calls `getClient(extra)` which reads `extra.authInfo.token`.
+
+**Claude Code client config** (`~/.claude.json`):
+```json
+{
+  "mcpServers": {
+    "xma-meta": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://<deployment>.vercel.app/api/mcp",
+        "--header", "Authorization: Bearer ${META_TOKEN}"
+      ],
+      "env": { "META_TOKEN": "EAAB..." }
+    }
+  }
+}
+```
 
 ## Cross-Business Ad Account Setup
 

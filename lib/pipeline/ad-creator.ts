@@ -1,13 +1,33 @@
 import * as path from "node:path"
 import type { MetaApiClient } from "@/lib/meta-api"
-import type { AdCreativeCreateParams, AssetFeedSpec, ObjectStorySpec } from "@/lib/meta-api-types"
-import type { ConfigAd } from "./config-schema"
+import type { AdCreativeCreateParams } from "@/lib/meta-api-types"
+import type { ConfigAd, ConfigAdCreative, ConfigSlide } from "./config-schema"
 import type { PipelineContext } from "./context"
 
 const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp"])
 
 function isImageFile(filename: string): boolean {
 	return IMAGE_EXTENSIONS.has(path.extname(filename).toLowerCase())
+}
+
+function creativeFilename(creative: ConfigAdCreative): string {
+	if (creative.fileUrl) return path.basename(new URL(creative.fileUrl).pathname) || creative.fileUrl
+	return creative.file ?? ""
+}
+
+function slideFilename(slide: ConfigSlide): string {
+	if (slide.fileUrl) return path.basename(new URL(slide.fileUrl).pathname) || slide.fileUrl
+	return slide.file ?? ""
+}
+
+function creativeContextKey(creative: ConfigAdCreative): string {
+	if (creative.fileUrl) return `url:${creative.fileUrl}`
+	return `file:${creative.file}`
+}
+
+function slideContextKey(slide: ConfigSlide): string {
+	if (slide.fileUrl) return `url:${slide.fileUrl}`
+	return `file:${slide.file}`
 }
 
 function resolveLink(creative: ConfigAd["creative"]): string {
@@ -21,12 +41,12 @@ function isCarouselAd(ad: ConfigAd): boolean {
 function buildCarouselObjectStorySpec(
 	ad: ConfigAd,
 	ctx: PipelineContext,
-): ObjectStorySpec {
+) {
 	const creative = ad.creative
 	const slides = creative.slides!
 
 	const childAttachments = slides.map((slide, index) => ({
-		image_hash: ctx.resolveRef(`file:${slide.file}`),
+		image_hash: ctx.resolveRef(slideContextKey(slide)),
 		link: resolveLink(creative),
 		name: slide.headline ?? creative.headlines[index] ?? creative.headlines[0],
 		call_to_action: {
@@ -55,51 +75,47 @@ function buildSingleObjectStorySpec(
 	ad: ConfigAd,
 	assetId: string,
 	thumbnailUrl?: string,
-): ObjectStorySpec {
+) {
 	const creative = ad.creative
-
-	const spec: ObjectStorySpec = {
-		page_id: creative.pageId,
-		...(creative.instagramActorId && { instagram_user_id: creative.instagramActorId }),
-	}
-
 	const ctaValue = {
 		link: resolveLink(creative),
 		...(creative.leadFormId && { lead_gen_form_id: creative.leadFormId }),
 	}
+	const base = {
+		page_id: creative.pageId,
+		...(creative.instagramActorId && { instagram_user_id: creative.instagramActorId }),
+	}
 
-	if (isImageFile(creative.file!)) {
-		spec.link_data = {
-			link: resolveLink(creative),
-			message: creative.primaryTexts[0],
-			name: creative.headlines[0],
-			image_hash: assetId,
-			...(creative.description && { description: creative.description }),
-			call_to_action: {
-				type: creative.callToAction as "SHOP_NOW",
-				value: ctaValue,
+	if (isImageFile(creativeFilename(creative))) {
+		return {
+			...base,
+			link_data: {
+				link: resolveLink(creative),
+				message: creative.primaryTexts[0],
+				name: creative.headlines[0],
+				image_hash: assetId,
+				...(creative.description && { description: creative.description }),
+				call_to_action: { type: creative.callToAction as "SHOP_NOW", value: ctaValue },
 			},
 		}
-	} else {
-		spec.video_data = {
+	}
+
+	return {
+		...base,
+		video_data: {
 			video_id: assetId,
 			message: creative.primaryTexts[0],
 			title: creative.headlines[0],
 			...(creative.description && { link_description: creative.description }),
 			...(thumbnailUrl && { image_url: thumbnailUrl }),
-			call_to_action: {
-				type: creative.callToAction as "SHOP_NOW",
-				value: ctaValue,
-			},
-		}
+			call_to_action: { type: creative.callToAction as "SHOP_NOW", value: ctaValue },
+		},
 	}
-
-	return spec
 }
 
 function buildCarouselAssetFeedSpec(
 	ad: ConfigAd,
-): AssetFeedSpec | undefined {
+) {
 	const creative = ad.creative
 	const hasMultipleTexts = creative.primaryTexts.length > 1
 
@@ -118,14 +134,14 @@ function buildSingleAssetFeedSpec(
 	ad: ConfigAd,
 	assetId: string,
 	thumbnailUrl?: string,
-): AssetFeedSpec | undefined {
+) {
 	const creative = ad.creative
 	const hasMultipleTexts = creative.primaryTexts.length > 1
 	const hasMultipleHeadlines = creative.headlines.length > 1
 
 	if (!hasMultipleTexts && !hasMultipleHeadlines) return undefined
 
-	const isImage = isImageFile(creative.file!)
+	const isImage = isImageFile(creativeFilename(creative))
 	const adFormat = isImage ? "SINGLE_IMAGE" : "SINGLE_VIDEO"
 
 	const ctaSpec = creative.leadFormId
@@ -191,27 +207,27 @@ export async function createAd(
 
 	const adSetId = ctx.resolveRef(ad.adSetRef)
 
-	let objectStorySpec: ObjectStorySpec
-	let assetFeedSpec: AssetFeedSpec | undefined
+	let objectStorySpec: AdCreativeCreateParams["object_story_spec"]
+	let assetFeedSpec: AdCreativeCreateParams["asset_feed_spec"]
 
 	if (isCarouselAd(ad)) {
-		objectStorySpec = buildCarouselObjectStorySpec(ad, ctx)
-		assetFeedSpec = buildCarouselAssetFeedSpec(ad)
+		objectStorySpec = buildCarouselObjectStorySpec(ad, ctx) as AdCreativeCreateParams["object_story_spec"]
+		assetFeedSpec = buildCarouselAssetFeedSpec(ad) as AdCreativeCreateParams["asset_feed_spec"]
 	} else {
-		const assetId = ctx.resolveRef(`file:${ad.creative.file}`)
+		const assetId = ctx.resolveRef(creativeContextKey(ad.creative))
 
 		let thumbnailUrl: string | undefined
-		if (!isImageFile(ad.creative.file!)) {
+		if (!isImageFile(creativeFilename(ad.creative))) {
 			thumbnailUrl = await pollForVideoReady(client, assetId)
 		}
 
-		objectStorySpec = buildSingleObjectStorySpec(ad, assetId, thumbnailUrl)
+		objectStorySpec = buildSingleObjectStorySpec(ad, assetId, thumbnailUrl) as AdCreativeCreateParams["object_story_spec"]
 
 		const hasMultipleVariations =
 			ad.creative.primaryTexts.length > 1 || ad.creative.headlines.length > 1
-		assetFeedSpec = hasMultipleVariations
+		assetFeedSpec = (hasMultipleVariations
 			? buildSingleAssetFeedSpec(ad, assetId, thumbnailUrl)
-			: undefined
+			: undefined) as AdCreativeCreateParams["asset_feed_spec"]
 	}
 
 	const creativeParams: AdCreativeCreateParams = {

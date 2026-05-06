@@ -98,7 +98,8 @@ export const ConfigAdSet = z.object({
 export type ConfigAdSet = z.infer<typeof ConfigAdSet>
 
 export const ConfigSlide = z.object({
-	file: z.string(),
+	file: z.string().optional(),
+	fileUrl: z.string().url().optional(),
 	headline: z.string().optional(),
 })
 
@@ -109,6 +110,7 @@ export const ConfigAdCreative = z
 		pageId: z.string(),
 		instagramActorId: z.string().optional(),
 		file: z.string().optional(),
+		fileUrl: z.string().url().optional(),
 		slides: z.array(ConfigSlide).min(2).optional(),
 		primaryTexts: z.array(z.string()).min(1),
 		headlines: z.array(z.string()).min(1),
@@ -119,11 +121,14 @@ export const ConfigAdCreative = z
 		urlTags: z.string().optional(),
 		catalogId: z.string().optional(),
 	})
-	.refine((data) => data.file || data.slides, {
-		message: "Either 'file' (single creative) or 'slides' (carousel) must be provided",
+	.refine((data) => data.file || data.fileUrl || data.slides, {
+		message: "Either 'file', 'fileUrl' (single creative) or 'slides' (carousel) must be provided",
 	})
-	.refine((data) => !(data.file && data.slides), {
-		message: "Cannot provide both 'file' and 'slides' — use 'slides' for carousel ads",
+	.refine((data) => !(data.file && data.fileUrl), {
+		message: "Cannot provide both 'file' and 'fileUrl' — use one or the other",
+	})
+	.refine((data) => !((data.file || data.fileUrl) && data.slides), {
+		message: "Cannot provide both a file/fileUrl and 'slides' — use 'slides' for carousel ads",
 	})
 
 export type ConfigAdCreative = z.infer<typeof ConfigAdCreative>

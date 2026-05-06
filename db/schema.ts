@@ -20,13 +20,22 @@ export const pipelineExecutions = pgTable("pipeline_executions", {
 
 export const pipelineEntities = pgTable("pipeline_entities", {
 	id: uuid().primaryKey().defaultRandom(),
-	executionId: uuid()
-		.notNull()
-		.references(() => pipelineExecutions.id, { onDelete: "cascade" }),
+	executionId: uuid().references(() => pipelineExecutions.id, { onDelete: "cascade" }),
 	entityType: text().notNull(),
 	ref: text().notNull(),
 	metaId: text().notNull(),
 	name: text().notNull(),
+	source: text().notNull().default("pipeline"),
+})
+
+export const entityRefs = pgTable("entity_refs", {
+	ref: text().primaryKey(),
+	metaId: text().notNull(),
+	type: text().notNull(),
+	accountId: text(),
+	parentRef: text(),
+	metadata: jsonb(),
+	createdAt: timestamp().notNull().defaultNow(),
 })
 
 export const pipelineAssets = pgTable(

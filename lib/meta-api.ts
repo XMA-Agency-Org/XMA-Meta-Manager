@@ -1,6 +1,7 @@
 import axios, { type AxiosInstance } from "axios"
 import FormData from "form-data"
 import * as fs from "node:fs"
+import * as os from "node:os"
 import * as path from "node:path"
 import type {
 	AdCreateParams,
@@ -318,6 +319,88 @@ export class MetaApiClient {
 			try {
 				const { data } = await this.client.get("/me/accounts")
 				return data
+			} catch (error) {
+				extractMetaError(error)
+			}
+		})
+	}
+
+	async searchGeo(
+		query: string,
+		type: "adgeolocation" | "adcity" | "adregion" | "adcountry" = "adgeolocation",
+	): Promise<{ data: Array<Record<string, unknown>> }> {
+		return withRetry(async () => {
+			try {
+				const { data } = await this.client.get("/search", {
+					params: { type, q: query },
+				})
+				return data
+			} catch (error) {
+				extractMetaError(error)
+			}
+		})
+	}
+
+	async uploadImageFromUrl(adAccountId: string, url: string): Promise<ImageUploadResponse> {
+		const response = await axios.get(url, { responseType: "arraybuffer" })
+		const buffer = Buffer.from(response.data)
+		const filename = path.basename(new URL(url).pathname) || "image.jpg"
+
+		const formData = new FormData()
+		formData.append("filename", buffer, { filename })
+		formData.append("access_token", this.accessToken)
+
+		return withRetry(async () => {
+			try {
+				const { data } = await axios.post(
+					`${this.client.defaults.baseURL}/${adAccountId}/adimages`,
+					formData,
+					{ headers: formData.getHeaders() },
+				)
+				return data as ImageUploadResponse
+			} catch (error) {
+				extractMetaError(error)
+			}
+		})
+	}
+
+	async uploadVideoFromUrl(adAccountId: string, url: string): Promise<VideoUploadResponse> {
+		const response = await axios.get(url, { responseType: "arraybuffer" })
+		const buffer = Buffer.from(response.data)
+		const filename = path.basename(new URL(url).pathname) || "video.mp4"
+		const tmpPath = path.join(os.tmpdir(), `mcp_upload_${Date.now()}_${filename}`)
+
+		fs.writeFileSync(tmpPath, buffer)
+		try {
+			return await this.uploadVideo(adAccountId, tmpPath)
+		} finally {
+			fs.unlinkSync(tmpPath)
+		}
+	}
+
+	async getCampaignTree(campaignId: string): Promise<Record<string, unknown>> {
+		return withRetry(async () => {
+			try {
+				const [campaign, adSetsResp] = await Promise.all([
+					this.client.get(`/${campaignId}`, {
+						params: { fields: "id,name,status,objective,daily_budget,lifetime_budget,created_time" },
+					}),
+					this.client.get(`/${campaignId}/adsets`, {
+						params: { fields: "id,name,status,daily_budget,lifetime_budget,optimization_goal,created_time" },
+					}),
+				])
+
+				const adSets = adSetsResp.data.data as Array<Record<string, unknown>>
+				const adSetsWithAds = await Promise.all(
+					adSets.map(async (adSet) => {
+						const adsResp = await this.client.get(`/${adSet.id}/ads`, {
+							params: { fields: "id,name,status,creative{id,name},created_time" },
+						})
+						return { ...adSet, ads: adsResp.data.data }
+					}),
+				)
+
+				return { ...campaign.data, adSets: adSetsWithAds }
 			} catch (error) {
 				extractMetaError(error)
 			}

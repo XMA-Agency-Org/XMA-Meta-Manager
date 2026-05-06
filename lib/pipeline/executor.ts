@@ -63,6 +63,67 @@ export interface ExecutorOptions {
 	dryRun?: boolean
 }
 
+export interface PipelineResult {
+	created: Array<{ type: string; ref: string; metaId: string; name: string }>
+}
+
+export async function runPipelineFromConfig(
+	config: ReturnType<typeof loadConfig>["config"],
+	client: MetaApiClient,
+	options: ExecutorOptions = {},
+	existingIds?: ReturnType<typeof loadExistingIds>,
+): Promise<PipelineResult> {
+	const ctx = new PipelineContext(config.adAccountId)
+
+	if (config.existingCampaignId) {
+		const campaignRef = config.adSets[0]?.campaignRef
+		if (campaignRef) ctx.setRef(campaignRef, config.existingCampaignId)
+	}
+
+	if (options.dryRun) {
+		printDryRun(config)
+		return { created: [] }
+	}
+
+	const cached = existingIds ?? { campaign: null, adSets: new Map(), adCreatives: new Map(), ads: new Map() }
+
+	await uploadCreatives(config, "", client, ctx)
+
+	if (config.campaign) {
+		if (cached.campaign?.ref === config.campaign.ref) {
+			ctx.setRef(config.campaign.ref, cached.campaign.metaId)
+			ctx.trackCreated({ type: "campaign", ref: config.campaign.ref, metaId: cached.campaign.metaId, name: config.campaign.name })
+		} else {
+			await createCampaign(config.campaign, client, ctx)
+		}
+	}
+
+	for (const adSet of config.adSets) {
+		const existingId = cached.adSets.get(adSet.ref)
+		if (existingId) {
+			ctx.setRef(adSet.ref, existingId)
+			ctx.trackCreated({ type: "adSet", ref: adSet.ref, metaId: existingId, name: adSet.name })
+		} else {
+			await createAdSet(adSet, client, ctx)
+		}
+	}
+
+	for (const ad of config.ads) {
+		const existingAdId = cached.ads.get(ad.ref)
+		const existingCreativeId = cached.adCreatives.get(`${ad.ref}:creative`)
+		if (existingAdId && existingCreativeId) {
+			ctx.setRef(ad.ref, existingAdId)
+			ctx.setRef(`${ad.ref}:creative`, existingCreativeId)
+			ctx.trackCreated({ type: "adCreative", ref: `${ad.ref}:creative`, metaId: existingCreativeId, name: `${ad.name} - Creative` })
+			ctx.trackCreated({ type: "ad", ref: ad.ref, metaId: existingAdId, name: ad.name })
+		} else {
+			await createAd(ad, client, ctx)
+		}
+	}
+
+	return { created: ctx.createdEntities }
+}
+
 export async function runPipeline(
 	configPath: string,
 	client: MetaApiClient,
@@ -89,7 +150,8 @@ export async function runPipeline(
 	}
 
 	try {
-		const { campaign: existingCampaign, adSets: existingAdSets, adCreatives: existingAdCreatives, ads: existingAds } = loadExistingIds(configDir)
+		const existingIds = loadExistingIds(configDir)
+		const { campaign: existingCampaign, adSets: existingAdSets, adCreatives: existingAdCreatives, ads: existingAds } = existingIds
 
 		await uploadCreatives(config, creativesDir, client, ctx)
 
