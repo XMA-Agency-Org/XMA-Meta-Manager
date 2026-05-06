@@ -98,6 +98,7 @@ export async function POST(req: Request) {
 	const db = drizzle(client)
 
 	const results: string[] = []
+	let tablesFound: unknown[] = []
 	try {
 		for (const stmt of STATEMENTS) {
 			try {
@@ -107,13 +108,13 @@ export async function POST(req: Request) {
 				results.push(`error: ${error}`)
 			}
 		}
+		const check = await db.execute(sql.raw(
+			`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ('clients','ad_accounts','campaign_snapshots','ad_set_snapshots','ad_snapshots') ORDER BY table_name`,
+		))
+		tablesFound = check.map((r: Record<string, unknown>) => r.table_name)
 	} finally {
 		await client.end()
 	}
 
-	const check = await db.execute(sql.raw(
-		`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ('clients','ad_accounts','campaign_snapshots','ad_set_snapshots','ad_snapshots') ORDER BY table_name`
-	))
-
-	return Response.json({ ok: true, results, tablesFound: check.map((r: Record<string, unknown>) => r.table_name), urlPrefix: unpooledUrl.slice(0, 30) })
+	return Response.json({ ok: true, results, tablesFound, urlPrefix: unpooledUrl.slice(0, 30) })
 }
