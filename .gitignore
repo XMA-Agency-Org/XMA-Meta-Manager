@@ -61,3 +61,8 @@ campaigns/
 
 # one-off scripts
 scripts/meta/fix-dynamic-creative.ts
+
+# client seed data — contains ad account IDs
+scripts/db/clients.json
+clients.json
+.env*.local

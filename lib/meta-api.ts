@@ -260,9 +260,32 @@ export class MetaApiClient {
 		return { id: String(videoId) } as VideoUploadResponse
 	}
 
+	private async paginate<T extends Record<string, unknown>>(
+		path: string,
+		params: Record<string, string | number>,
+		maxPages = 5,
+	): Promise<T[]> {
+		const results: T[] = []
+		let after: string | undefined
+		let page = 0
+
+		while (page < maxPages) {
+			const { data } = await this.client.get(path, {
+				params: { ...params, limit: 200, ...(after ? { after } : {}) },
+			})
+			const items: T[] = data.data ?? []
+			results.push(...items)
+			after = data.paging?.cursors?.after
+			if (!after || items.length === 0) break
+			page++
+		}
+
+		return results
+	}
+
 	async listCampaigns(
 		adAccountId: string,
-		fields = "id,name,status,objective",
+		fields = "id,name,status,effective_status,objective,daily_budget,lifetime_budget,created_time,updated_time",
 	): Promise<{ data: Array<Record<string, unknown>> }> {
 		return withRetry(async () => {
 			try {
@@ -278,7 +301,7 @@ export class MetaApiClient {
 
 	async listAdSets(
 		adAccountId: string,
-		fields = "id,name,status,campaign_id,daily_budget",
+		fields = "id,name,status,effective_status,campaign_id,daily_budget,lifetime_budget,optimization_goal,created_time",
 	): Promise<{ data: Array<Record<string, unknown>> }> {
 		return withRetry(async () => {
 			try {
@@ -286,6 +309,35 @@ export class MetaApiClient {
 					params: { fields },
 				})
 				return data
+			} catch (error) {
+				extractMetaError(error)
+			}
+		})
+	}
+
+	async listAds(
+		adAccountId: string,
+		fields = "id,name,status,effective_status,adset_id,creative{id},created_time",
+	): Promise<Array<Record<string, unknown>>> {
+		return withRetry(async () => {
+			try {
+				return await this.paginate<Record<string, unknown>>(
+					`/${adAccountId}/ads`,
+					{ fields },
+				)
+			} catch (error) {
+				extractMetaError(error)
+			}
+		})
+	}
+
+	async listAdAccounts(): Promise<Array<Record<string, unknown>>> {
+		return withRetry(async () => {
+			try {
+				const results = await this.paginate<Record<string, unknown>>("/me/adaccounts", {
+					fields: "id,name,account_id,currency,timezone_name",
+				})
+				return results
 			} catch (error) {
 				extractMetaError(error)
 			}

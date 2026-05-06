@@ -1,9 +1,13 @@
 import { z } from "zod/v4"
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
+import { eq } from "drizzle-orm"
+import { db } from "@/db"
+import { adAccounts, adSetSnapshots, adSnapshots, campaignSnapshots, clients } from "@/db/schema"
 import { MetaApiClient } from "@/lib/meta-api"
 import { PipelineConfig } from "@/lib/pipeline/config-schema"
 import { runPipelineFromConfig } from "@/lib/pipeline/executor"
 import { registerRef, resolveRef, requireRef, listRefs, unregisterRef } from "@/lib/mcp/refs"
+import { syncAdAccount, syncAllAdAccounts } from "@/lib/sync/account-sync"
 
 const CHARACTER_LIMIT = 25_000
 
@@ -429,6 +433,193 @@ All ads are created PAUSED by default. Returns metaId.`,
 			})
 			if (ref) await registerRef(ref, result.id, "ad", adAccountId, adSetRef)
 			return textContent({ metaId: result.id, ref: ref ?? null })
+		},
+	)
+
+	server.registerTool(
+		"meta_register_client",
+		{
+			description: `Register a client in the database.
+Use before adding ad accounts. Slug is a short unique identifier (e.g. "floarea").
+Idempotent — calling again updates name/notes.`,
+			inputSchema: z.object({
+				slug: z.string().min(1).describe("Unique short identifier, e.g. 'floarea'"),
+				name: z.string().min(1).describe("Display name of the client"),
+				notes: z.string().optional().describe("Optional notes about the client"),
+			}),
+			annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+		},
+		async ({ slug, name, notes }) => {
+			if (!db) throw new Error("DATABASE_URL not configured.")
+			const [row] = await db
+				.insert(clients)
+				.values({ slug, name, notes: notes ?? null })
+				.onConflictDoUpdate({ target: clients.slug, set: { name, notes: notes ?? null } })
+				.returning()
+			return textContent(row)
+		},
+	)
+
+	server.registerTool(
+		"meta_register_ad_account",
+		{
+			description: `Link a Meta ad account (act_XXX) to a registered client.
+Run after meta_register_client. Idempotent — calling again updates the name.
+Use meta_list_clients to verify the registration.`,
+			inputSchema: z.object({
+				clientSlug: z.string().min(1).describe("Slug of an existing client"),
+				adAccountId: z.string().min(1).describe("Meta ad account ID in act_XXXX format"),
+				name: z.string().optional().describe("Human-readable name for this account"),
+				currency: z.string().optional(),
+				timezone: z.string().optional(),
+			}),
+			annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+		},
+		async ({ clientSlug, adAccountId, name, currency, timezone }) => {
+			if (!db) throw new Error("DATABASE_URL not configured.")
+			const clientRows = await db.select().from(clients).where(eq(clients.slug, clientSlug))
+			if (clientRows.length === 0) throw new Error(`Client "${clientSlug}" not found. Use meta_register_client first.`)
+			const [row] = await db
+				.insert(adAccounts)
+				.values({ clientId: clientRows[0].id, metaId: adAccountId, name: name ?? null, currency: currency ?? null, timezone: timezone ?? null })
+				.onConflictDoUpdate({ target: adAccounts.metaId, set: { name: name ?? null, clientId: clientRows[0].id } })
+				.returning()
+			return textContent(row)
+		},
+	)
+
+	server.registerTool(
+		"meta_list_clients",
+		{
+			description: `List all registered clients and their Meta ad accounts.
+Shows lastSyncedAt so you know which accounts have stale snapshots.
+Use before meta_sync_ad_account to find the account ID to sync.`,
+			inputSchema: z.object({}),
+			annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+		},
+		async () => {
+			if (!db) throw new Error("DATABASE_URL not configured.")
+			const clientRows = await db.select().from(clients)
+			const accountRows = await db.select().from(adAccounts)
+			const result = clientRows.map((c) => ({
+				...c,
+				adAccounts: accountRows.filter((a) => a.clientId === c.id),
+			}))
+			return textContent(result)
+		},
+	)
+
+	server.registerTool(
+		"meta_sync_ad_account",
+		{
+			description: `Pull live campaigns, ad sets, and ads from Meta into the local database for one ad account.
+Upserts snapshot tables and registers entity refs. Safe to re-run — idempotent upserts.
+Returns counts of synced entities and duration in ms.`,
+			inputSchema: z.object({
+				adAccountId: z.string().describe("Meta ad account ID in act_XXXX format"),
+			}),
+			annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+		},
+		async ({ adAccountId }, extra) => {
+			if (!db) throw new Error("DATABASE_URL not configured.")
+			const client = getClient(extra)
+			const rows = await db.select().from(adAccounts).where(eq(adAccounts.metaId, adAccountId))
+			if (rows.length === 0) {
+				throw new Error(
+					`Ad account "${adAccountId}" not registered. Use meta_register_ad_account to add it first, or meta_list_clients to see known accounts.`,
+				)
+			}
+			const result = await syncAdAccount(client, rows[0])
+			return textContent(result)
+		},
+	)
+
+	server.registerTool(
+		"meta_sync_all",
+		{
+			description: `Sync all registered ad accounts sequentially — pulls campaigns, ad sets, and ads from Meta.
+May take several minutes for 10+ accounts. Returns per-account counts.
+Run this periodically to keep snapshots fresh before using meta_get_client_overview.`,
+			inputSchema: z.object({}),
+			annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+		},
+		async (_, extra) => {
+			if (!db) throw new Error("DATABASE_URL not configured.")
+			const client = getClient(extra)
+			const results = await syncAllAdAccounts(client)
+			const totals = results.reduce((acc, r) => ({
+				campaigns: acc.campaigns + r.campaigns,
+				adSets: acc.adSets + r.adSets,
+				ads: acc.ads + r.ads,
+			}), { campaigns: 0, adSets: 0, ads: 0 })
+			return textContent({ perAccount: results, totals })
+		},
+	)
+
+	server.registerTool(
+		"meta_get_client_overview",
+		{
+			description: `Return a nested view of a client's campaigns, ad sets, and ads from cached snapshots.
+Does NOT call Meta API — reads local DB. Fast; works even without a valid token.
+Use responseFormat "concise" for counts only, "detailed" for full entity lists.
+Filter by status to focus on ACTIVE or PAUSED entities.`,
+			inputSchema: z.object({
+				clientSlug: z.string().describe("Client slug, e.g. 'floarea'. Use meta_list_clients to discover slugs."),
+				status: z.enum(["ACTIVE", "PAUSED", "all"]).optional().default("all"),
+				responseFormat: z.enum(["concise", "detailed"]).optional().default("concise"),
+			}),
+			annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+		},
+		async ({ clientSlug, status, responseFormat }) => {
+			if (!db) throw new Error("DATABASE_URL not configured.")
+			const dbRef = db
+
+			const clientRows = await dbRef.select().from(clients).where(eq(clients.slug, clientSlug))
+			if (clientRows.length === 0) {
+				return { content: [{ type: "text", text: `Client "${clientSlug}" not found. Use meta_list_clients to see all clients.` }] }
+			}
+			const clientRow = clientRows[0]
+
+			const accountRows = await dbRef.select().from(adAccounts).where(eq(adAccounts.clientId, clientRow.id))
+
+			const overview = await Promise.all(
+				accountRows.map(async (acc) => {
+					const campaignQuery = dbRef.select().from(campaignSnapshots).where(eq(campaignSnapshots.adAccountId, acc.id))
+					const adSetQuery = dbRef.select().from(adSetSnapshots).where(eq(adSetSnapshots.adAccountId, acc.id))
+					const adQuery = dbRef.select().from(adSnapshots).where(eq(adSnapshots.adAccountId, acc.id))
+
+					const [camps, sets, ads] = await Promise.all([campaignQuery, adSetQuery, adQuery])
+
+					const filteredCamps = status === "all" ? camps : camps.filter((c) => c.effectiveStatus === status)
+					const filteredSets = status === "all" ? sets : sets.filter((s) => s.effectiveStatus === status)
+					const filteredAds = status === "all" ? ads : ads.filter((a) => a.effectiveStatus === status)
+
+					if (responseFormat === "concise") {
+						return {
+							adAccountId: acc.metaId,
+							name: acc.name,
+							lastSyncedAt: acc.lastSyncedAt,
+							campaigns: filteredCamps.length,
+							adSets: filteredSets.length,
+							ads: filteredAds.length,
+						}
+					}
+
+					const campaignMap = new Map(filteredCamps.map((c) => [c.metaId, { ...c, adSets: [] as typeof filteredSets }]))
+					for (const s of filteredSets) {
+						campaignMap.get(s.campaignMetaId)?.adSets.push(s)
+					}
+
+					return {
+						adAccountId: acc.metaId,
+						name: acc.name,
+						lastSyncedAt: acc.lastSyncedAt,
+						campaigns: [...campaignMap.values()],
+					}
+				}),
+			)
+
+			return textContent({ client: { slug: clientRow.slug, name: clientRow.name }, adAccounts: overview })
 		},
 	)
 
