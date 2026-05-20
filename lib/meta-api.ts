@@ -420,7 +420,7 @@ export class MetaApiClient {
 		const response = await axios.get(url, { responseType: "arraybuffer" })
 		const buffer = Buffer.from(response.data)
 		const filename = path.basename(new URL(url).pathname) || "video.mp4"
-		const tmpPath = path.join(os.tmpdir(), `mcp_upload_${Date.now()}_${filename}`)
+		const tmpPath = path.join(os.tmpdir(), `upload_${Date.now()}_${filename}`)
 
 		fs.writeFileSync(tmpPath, buffer)
 		try {

@@ -6,8 +6,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 XMA Meta Manager — a Next.js 16 app + CLI pipeline for agency management of Meta ad campaigns. The primary workflow today is a YAML config-driven pipeline that creates full Meta campaigns (campaign → ad sets → ads) from the command line, with optional PostgreSQL persistence. The web dashboard is scaffolded but minimal (redirects to `/overview`).
 
-A **remote MCP server** is also served at `/api/mcp` (HTTP transport). Bearer auth: pass the Meta access token as `Authorization: Bearer <token>`. Registered tools: `meta_list_pages`, `meta_list_campaigns`, `meta_list_adsets`, `meta_get_video_status`, `meta_get_video_thumbnails`, `meta_search_geo`, `meta_get_campaign_tree`, `meta_lookup_ref`, `meta_list_refs`, `meta_forget_ref`, `meta_upload_image_from_url`, `meta_upload_video_from_url`, `meta_create_campaign`, `meta_create_adset`, `meta_create_ad`, `meta_run_pipeline`.
-
 ## Commands
 
 ```bash
